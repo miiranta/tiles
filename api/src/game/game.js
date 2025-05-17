@@ -78,8 +78,8 @@ class TileMap {
 }
 
 module.exports = {
-    TileMap,
-    Tile,
-    COLORS
+  TileMap,
+  COLORS
 };
+  
 
