@@ -7,6 +7,8 @@ const TICKS_PER_SECOND: number = 1024;
 const TILE_SIZE: number = 100;
 const CHUNK_SIZE: number = 10;
 
+const PLACE_TILE_TIMEOUT: number = 100;
+
 const RENDER_DISTANCE: number = 20;
 
 const DRAW_ALL_MAP: boolean = true;
@@ -42,7 +44,8 @@ export class TilesComponent {
   colors: string[] = COLORS;
   selected_color: string = COLORS[0];
   game?: Game = undefined;
-
+  placeTileTimeout: any = null;
+  
   ngAfterViewInit() {
     this.game = new Game(this.tiles, this.api, this.playerId);
 
@@ -54,7 +57,7 @@ export class TilesComponent {
         this.fps = Math.round(this.game?.drawManager.fps ?? 0);
       }, 1000 / 10);
   }
-
+  
   canvasSetSize() {
     if (this.tiles) {
       this.tiles.nativeElement.width = window.innerWidth;
@@ -66,12 +69,26 @@ export class TilesComponent {
     this.selected_color = color;
   }
 
-  placeTile() {
+  private placeTile() {
     const x = this.coords.x;
     const y = this.coords.y;
 
     if (this.selected_color) {
       this.game?.map.placeTile(x, y, this.selected_color);
+    }
+  }
+
+  placeTileBegin() {
+    if (this.placeTileTimeout) this.placeTileEnd();
+    this.placeTileTimeout = setInterval(() => {
+      this.placeTile();
+    }, PLACE_TILE_TIMEOUT);
+  }
+
+  placeTileEnd() {
+    if (this.placeTileTimeout) {
+      clearInterval(this.placeTileTimeout);
+      this.placeTileTimeout = null;
     }
   }
 
@@ -187,7 +204,7 @@ class MultiplayerManager {
   listenTilePlaced() {
     this.game.api.on('tilePlaced').subscribe((data: any) => {
       const tile = new Tile(data.x, data.y, data.type);
-      this.game.map.setTile(tile.x, tile.y, tile.type);
+      this.game.map.placeTileLocal(tile.x, tile.y, tile.type);
     });
   }
 
@@ -354,13 +371,18 @@ class DrawManager {
       // Render distance - A square with the player in the middle
       const player_coords = this.game.player.getPosition();
 
-      // Draw only the tiles in the render distance
-      for (let x = player_coords.x - RENDER_DISTANCE; x < player_coords.x + RENDER_DISTANCE + 1; x++) {
-        for (let y = player_coords.y - RENDER_DISTANCE; y < player_coords.y + RENDER_DISTANCE + 1; y++) {
+      if(DRAW_ALL_MAP) {
+        var render_distance_horizontal = Math.floor((this.game.canvas.width / TILE_SIZE / 2) * (1/this.scaling_factor)) + 1;
+        var render_distance_vertical = Math.floor((this.game.canvas.height / TILE_SIZE / 2) * (1/this.scaling_factor)) + 1;
+      } else {
+        var render_distance_horizontal = RENDER_DISTANCE;
+        var render_distance_vertical = RENDER_DISTANCE;
+      }
+
+      for (let x = player_coords.x - render_distance_horizontal; x < player_coords.x + render_distance_horizontal + 1; x++) {
+        for (let y = player_coords.y - render_distance_vertical; y < player_coords.y + render_distance_vertical + 1; y++) {
           const tile = this.game.map.getTile(x, y);
 
-          if(DRAW_ALL_MAP) continue;
-          // Coords relative to the player - center is 0, 0
           const player_coords_float = this.game.player.getPositionFloat();
           const x_relative = x - player_coords_float.x;
           const y_relative = y - player_coords_float.y;
@@ -369,17 +391,6 @@ class DrawManager {
         }
       }
 
-      if(DRAW_ALL_MAP) {
-        // Draw all tiles
-        this.game.map.map.forEach(tile => {
-          const player_coords_float = this.game.player.getPositionFloat();
-          const x_relative = tile.x - player_coords_float.x;
-          const y_relative = tile.y - player_coords_float.y;
-
-          this.drawTile(tile, x_relative, y_relative);
-        });
-      }
-      
     }
   }
 
@@ -534,34 +545,30 @@ class TileMap {
 
     return new Tile(x, y);
   }
-
+  
   placeTile(x: number, y: number, type: string) {
     const key = `${x},${y}`;
-    if (this.map.has(key)) {
-      const tile = this.map.get(key)!;
-      tile.type = type;
-    } else {
-      // Create a new tile and add it to the map
-      const tile = new Tile(x, y);
-      tile.type = type;
-      this.map.set(key, tile);
-    }
+
+    // Check if the tile exists
+    if (!this.map.has(key)) return;
+
+    // Check if the tile type is the same
+    if (this.map.get(key)?.type === type) return;
 
     this.api.emit('tilePlaced', { x, y, type });
     this.api.putMapTile(x, y, type);
   }
 
-  setTile(x: number, y: number, type: string) {
+  placeTileLocal(x: number, y: number, type: string) {
     const key = `${x},${y}`;
-    if (this.map.has(key)) {
-      const tile = this.map.get(key)!;
-      tile.type = type;
-    } else {
-      // Create a new tile and add it to the map
-      const tile = new Tile(x, y);
-      tile.type = type;
-      this.map.set(key, tile);
-    }
+
+    // Check if the tile exists
+    if (!this.map.has(key)) return;
+
+    // Check if the tile type is the same
+    if (this.map.get(key)?.type === type) return;
+
+    this.map.set(key, new Tile(x, y, type));
   }
 
 }

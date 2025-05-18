@@ -11,7 +11,7 @@
     <span>Nick: {{ playerId }}</span>
 </div>
 
-<canvas #tiles class="tiles-canvas" (click)="placeTile()"></canvas>
+<canvas #tiles class="tiles-canvas" (mousedown)="placeTileBegin()" (mouseup)="placeTileEnd()" (mouseleave)="placeTileEnd()"></canvas>
 
 <div class="colors-container">
   @for(color of colors; track color){

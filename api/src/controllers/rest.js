@@ -6,18 +6,18 @@ const { COLORS }            = require('../game/game');
 const gameServer            = require('../game/gameServer')();
 
 const setupRest = (app) => {
-    // Setup router
-    const router = express.Router();
-    setupRestEndpoints(router);
-    app.use(router);
-
-    // Public folder
-    app.use(express.static(ANGULAR_FOLDER));
-
     // CORS
     app.use(cors({
         origin: '*'
     }));
+
+    // Public folder
+    app.use(express.static(ANGULAR_FOLDER));
+
+    // Setup router
+    const router = express.Router();
+    setupRestEndpoints(router);
+    app.use(router);
 }
 
 const setupRestEndpoints = (router) => {
