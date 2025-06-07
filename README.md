@@ -3,10 +3,8 @@ SD + WEBDEV Project.
 
 #### Setup and Run
 
-API:
-
-- Define DB_CONNECTION_STRING (mongoDB), ANGULAR_FOLDER and PORT in `conf/.env`.
-- Then run:
+- Define MONGO_CONNECTION_STRING, ANGULAR_FOLDER, JWT_SECRET and PORT in `conf/.env`.
+- Then execute:
 
 ```bash
 // Setup (Angular App)
