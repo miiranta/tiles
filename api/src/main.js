@@ -2,6 +2,7 @@ const express                     = require('express');
 const http                        = require('http');
 const path                        = require('path');
 const { Database }                = require('./infrastructure/database');
+const { GameManager }             = require('./application/gameManager');
 
 // Carrega as variáveis de ambiente
 const dotenvpath = path.join(__dirname, './../../conf/.env');
@@ -13,6 +14,9 @@ const database = new Database(process.env.MONGO_CONNECTION_STRING);
 // Cria os objetos express e http
 const app = express();
 const server = http.createServer(app);
+
+// Inicializa o gameManager
+new GameManager(app, server, database);
 
 // Inicializa o servidor express
 server.listen(process.env.PORT, () => {
