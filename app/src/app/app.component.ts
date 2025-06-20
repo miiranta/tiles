@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
 
-import { TilesComponent } from './tiles/tiles.component';
+import { TilesComponent } from './components/tiles/tiles.component';
 
 @Component({
   selector: 'app-root',
