@@ -17,6 +17,19 @@ const setupWebsocketsStreams = (io) => {
 
     io.on('connection', (socket) => {
         log.info('websocket', `Client connected: ${socket.id}`);
+        
+        // Store the player name associated with this socket
+        let socketPlayerName = null;
+
+        // Helper function to authenticate and store player name
+        const authenticateSocket = (token) => {
+            const tokenInfo = tokenHandler.verifyToken(token);
+            if (tokenInfo.valid) {
+                socketPlayerName = tokenInfo.playerName;
+                return tokenInfo;
+            }
+            return null;
+        };
 
         // Player position updates
         socket.on('player-update', (data) => {
@@ -27,9 +40,9 @@ const setupWebsocketsStreams = (io) => {
                     return;
                 }
 
-                // Verify JWT token
-                const tokenInfo = tokenHandler.verifyToken(token);
-                if (!tokenInfo.valid) {
+                // Verify JWT token and store player name
+                const tokenInfo = authenticateSocket(token);
+                if (!tokenInfo) {
                     socket.emit('auth-error', { message: 'Invalid or expired token' });
                     return;
                 }
@@ -55,9 +68,9 @@ const setupWebsocketsStreams = (io) => {
                     return;
                 }
 
-                // Verify JWT token
-                const tokenInfo = tokenHandler.verifyToken(token);
-                if (!tokenInfo.valid) {
+                // Verify JWT token and store player name
+                const tokenInfo = authenticateSocket(token);
+                if (!tokenInfo) {
                     socket.emit('auth-error', { message: 'Invalid or expired token' });
                     return;
                 }
@@ -77,11 +90,14 @@ const setupWebsocketsStreams = (io) => {
         // Disconnect
         socket.on('disconnect', () => {
             try {
-                const playerName = tokenHandler.revokeToken(socket.id);
-                if (playerName) {
-                    // Notify all clients that this player has disconnected
-                    socket.broadcast.emit('player-remove', { playerName });
-                    log.info('websocket', `Player disconnected: ${playerName} (${socket.id})`);
+                if (socketPlayerName) {
+                    // Revoke the token for this player
+                    const removedPlayerName = tokenHandler.revokeToken(socketPlayerName);
+                    if (removedPlayerName) {
+                        // Notify all clients that this player has disconnected
+                        socket.broadcast.emit('player-remove', { playerName: removedPlayerName });
+                        log.info('websocket', `Player disconnected: ${removedPlayerName} (${socket.id})`);
+                    }
                 } else {
                     log.info('websocket', `Client disconnected: ${socket.id}`);
                 }
