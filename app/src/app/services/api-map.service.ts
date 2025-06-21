@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
-const BASE_URL = window.location.origin.replace(/:\d+$/, ':3000');
+const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,6 @@ export class ApiMapService {
       }
     })
   }
-
   async putMapTile(x: number, y: number, type: string){
     return await fetch(`${BASE_URL}/map/${x}/${y}/${type}`, {
       method: 'PUT',

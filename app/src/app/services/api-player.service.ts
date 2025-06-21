@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
-
-const BASE_URL = window.location.origin.replace(/:\d+$/, ':3000');
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +9,7 @@ const BASE_URL = window.location.origin.replace(/:\d+$/, ':3000');
 export class ApiPlayerService {
 
   constructor() {
-    this.socket = io(BASE_URL);
+    this.socket = io(`http://${environment.BASE_URL}:${environment.PORT}`);
   }
 
   // WebSocket

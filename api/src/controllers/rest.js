@@ -1,9 +1,16 @@
 const express               = require('express');
 const path                  = require('path');
 const cors                  = require('cors');
-const { ANGULAR_FOLDER }    = require('../../conf');
 const { COLORS }            = require('../game/game');
 const gameServer            = require('../game/gameServer')();
+
+// Load environment variables if not already loaded
+if (!process.env.BASE_URL) {
+    const dotenvPath = path.join(__dirname, '../../environments', '.env');
+    require('dotenv').config({ path: dotenvPath });
+}
+
+const ANGULAR_FOLDER = path.join(__dirname, '../../app/dist/tiles/browser');
 
 const setupRest = (app) => {
     // CORS
