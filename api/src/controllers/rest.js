@@ -1,8 +1,9 @@
 const express               = require('express');
 const path                  = require('path');
 const cors                  = require('cors');
-const { COLORS }            = require('../game/game');
+const { COLORS }            = require('../database/models/Tile');
 const gameServer            = require('../game/gameServer')();
+const { log }               = require('../utils/colorLogging');
 
 // Load environment variables if not already loaded
 if (!process.env.BASE_URL) {
@@ -18,6 +19,9 @@ const setupRest = (app) => {
         origin: '*'
     }));
 
+    // JSON parsing middleware
+    app.use(express.json());
+
     // Public folder
     app.use(express.static(ANGULAR_FOLDER));
 
@@ -25,6 +29,8 @@ const setupRest = (app) => {
     const router = express.Router();
     setupRestEndpoints(router);
     app.use(router);
+    
+    log.info('rest', 'REST endpoints configured');
 }
 
 const setupRestEndpoints = (router) => {
@@ -37,53 +43,70 @@ const setupRestEndpoints = (router) => {
 
     // GET tiles
     // Envia os tiles do mapa
-    router.get('/map/:x/:y/:render', (req, res) => { 
-        if (!req.params.x || !req.params.y || !req.params.render) {
-            return res.status(400).send('Missing parameters');
-        }
-
-        const x = parseInt(req.params.x);
-        const y = parseInt(req.params.y);
-        const render = req.params.render;
-
-        if(render > 100) res.status(400).send('Render value too high (>100)');
-        if(render < 0) res.status(400).send('Render value too low (<0)');
-        if(isNaN(x) || isNaN(y)) res.status(400).send('Invalid coordinates');
-
-        var tiles = [];
-        for(let i = -Math.floor(render / 2); i <= Math.floor(render / 2); i++) {
-            for(let j = -Math.floor(render / 2); j <= Math.floor(render / 2); j++) {
-            const tile = gameServer.getTile(x + i, y + j);
-            if(tile) {
-                tiles.push({
-                    x: tile.x,
-                    y: tile.y,
-                    type: tile.type
-                });
+    router.get('/map/:x/:y/:render', async (req, res) => { 
+        try {
+            if (!req.params.x || !req.params.y || !req.params.render) {
+                return res.status(400).json({ error: 'Missing parameters' });
             }
-            }
-        }
 
-        res.json(tiles);
+            const x = parseInt(req.params.x);
+            const y = parseInt(req.params.y);
+            const render = parseInt(req.params.render);
+
+            // Validation
+            if (render > 100) {
+                return res.status(400).json({ error: 'Render value too high (>100)' });
+            }
+            if (render < 0) {
+                return res.status(400).json({ error: 'Render value too low (<0)' });
+            }
+            if (isNaN(x) || isNaN(y) || isNaN(render)) {
+                return res.status(400).json({ error: 'Invalid coordinates or render value' });
+            }
+
+            // Get tiles from database
+            const tiles = await gameServer.getTiles(x, y, render);
+              res.json(tiles);
+        } catch (error) {
+            log.error('rest', `Error fetching tiles: ${error.message}`);
+            res.status(500).json({ error: 'Internal server error' });
+        }
     });
 
     // PUT tiles
     // Atualiza um tile do mapa
-    router.put('/map/:x/:y/:type', (req, res) => { 
-        if (!req.params.x || !req.params.y || !req.params.type) {
-            return res.status(400).send('Missing parameters');
+    router.put('/map/:x/:y/:type', async (req, res) => { 
+        try {
+            if (!req.params.x || !req.params.y || !req.params.type) {
+                return res.status(400).json({ error: 'Missing parameters' });
+            }
+
+            const x = parseInt(req.params.x);
+            const y = parseInt(req.params.y);
+            const type = req.params.type;
+
+            // Validation
+            if (!COLORS.includes(type)) {
+                return res.status(400).json({ error: 'Invalid color' });
+            }
+            if (isNaN(x) || isNaN(y)) {
+                return res.status(400).json({ error: 'Invalid coordinates' });
+            }
+
+            // Get player name from request body or headers (optional)
+            const playerName = req.body?.playerName || req.headers['x-player-name'] || 'anonymous';
+
+            // Place tile in database
+            const success = await gameServer.placeTile(x, y, type, playerName);
+            
+            if (success) {
+                res.status(200).json({ success: true });
+            } else {
+                res.status(500).json({ error: 'Failed to place tile' });
+            }        } catch (error) {
+            log.error('rest', `Error placing tile: ${error.message}`);
+            res.status(500).json({ error: 'Internal server error' });
         }
-
-        const x = parseInt(req.params.x);
-        const y = parseInt(req.params.y);
-        const type = req.params.type;
-
-        if(!COLORS.includes(type)) res.status(400).send('Invalid color');
-        if(isNaN(x) || isNaN(y)) res.status(400).send('Invalid coordinates');
-
-        gameServer.placeTile(x, y, type);
-
-        return res.sendStatus(200);
     });
 
 }

@@ -12,7 +12,7 @@ SD + WEBDEV Project.
 ```
 - Create "environments" folder in "api/" and ".env" file inside it with the following content:
 ```typescript
-    BASE_URL=localhost
+    MONGODB_CONNECTION_STRING='mongodb://...'
     PORT=3000
 ```
 
