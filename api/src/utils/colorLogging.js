@@ -1,3 +1,8 @@
+const SHOW_INFO = false;
+const SHOW_SUCCESS = true;
+const SHOW_ERROR = true;
+const SHOW_WARN = true;
+
 // Console colors utility
 const colors = {
   reset: '\x1b[0m',
@@ -12,15 +17,19 @@ const colors = {
 
 const log = {
   info: (module, message) => {
+    if (!SHOW_INFO) return;
     console.log(`${colors.white}[${module}] ${message}${colors.reset}`);
   },
   success: (module, message) => {
+    if (!SHOW_SUCCESS) return;
     console.log(`${colors.green}[${module}] ${message}${colors.reset}`);
   },
   error: (module, message) => {
+    if (!SHOW_ERROR) return;
     console.log(`${colors.red}[${module}] ${message}${colors.reset}`);
   },
   warn: (module, message) => {
+    if (!SHOW_WARN) return;
     console.log(`${colors.yellow}[${module}] ${message}${colors.reset}`);
   }
 };
