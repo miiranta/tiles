@@ -9,26 +9,24 @@ class StatsManager {
   async updateDistanceTraveled(playerName, distance) {
     try {
       const player = await Player.findByName(playerName);
-      
-      if (player) {
+        if (player) {
         await player.updateDistanceTraveled(distance);
-        log.info('statsManager', `Updated distance for ${playerName}: +${distance.toFixed(2)}`);
+        log.info('statsManager', `Distância atualizada para ${playerName}: +${distance.toFixed(2)}`);
       }
     } catch (error) {
-      log.error('statsManager', `Error updating distance traveled: ${error.message}`);
+      log.error('statsManager', `Erro ao atualizar distância percorrida: ${error.message}`);
     }
   }
 
   async updateTilesPlaced(playerName, tileType) {
     try {
       const player = await Player.findByName(playerName);
-      
-      if (player) {
+        if (player) {
         await player.updateTilesPlaced(tileType);
-        log.info('statsManager', `Updated tiles placed for ${playerName}: ${tileType}`);
+        log.info('statsManager', `Tiles colocados atualizados para ${playerName}: ${tileType}`);
       }
     } catch (error) {
-      log.error('statsManager', `Error updating tiles placed: ${error.message}`);
+      log.error('statsManager', `Erro ao atualizar tiles colocados: ${error.message}`);
     }
   }
 
@@ -46,29 +44,10 @@ class StatsManager {
         tilesPlaced: Object.fromEntries(player.stats.tilesPlaced || new Map()),
         lastLogin: player.lastLogin,
         createdAt: player.createdAt
-      };
-    } catch (error) {
-      log.error('statsManager', `Error getting player stats: ${error.message}`);
+      };    } catch (error) {
+      log.error('statsManager', `Erro ao obter estatísticas do jogador: ${error.message}`);
       return null;
-    }
-  }
-
-  async getAllPlayersStats() {
-    try {
-      const players = await Player.find({}).select('playerName stats lastLogin createdAt');
-      
-      return players.map(player => ({
-        playerName: player.playerName,
-        distanceTraveled: player.stats.distanceTraveled || 0,
-        tilesPlaced: Object.fromEntries(player.stats.tilesPlaced || new Map()),
-        lastLogin: player.lastLogin,
-        createdAt: player.createdAt
-      }));
-    } catch (error) {
-      log.error('statsManager', `Error getting all players stats: ${error.message}`);
-      return [];
-    }
-  }
+    }  }
 }
 
 module.exports = { StatsManager };

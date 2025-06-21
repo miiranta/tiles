@@ -19,9 +19,7 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
   showStatsModal: boolean = false;
   selectedPlayerName: string = '';
 
-  constructor(private cdr: ChangeDetectorRef) {}
-  ngOnInit() {
-    // Update the component every 1 second to reflect changes in player list and activity status
+  constructor(private cdr: ChangeDetectorRef) {}  ngOnInit() {
     this.updateInterval = setInterval(() => {
       this.cdr.detectChanges();
     }, 1000);
@@ -41,9 +39,7 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
 
   get totalPlayers(): number {
     return this.allPlayers.length + 1;
-  }
-  isPlayerActive(player: MultiplayerPlayer): boolean {
-    // Consider a player active if they updated within the last 30 seconds
+  }  isPlayerActive(player: MultiplayerPlayer): boolean {
     const thirtySecondsAgo = Date.now() - 30000;
     return player.last_update > thirtySecondsAgo;
   }

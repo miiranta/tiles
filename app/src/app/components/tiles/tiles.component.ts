@@ -8,12 +8,18 @@ import { ListPlayersComponent } from './components/list-players/list-players.com
 
 @Component({
   selector: 'tiles',
-  imports: [CommonModule, GameStatsComponent, GameCanvasComponent, ColorSelectorComponent, ListPlayersComponent],
+  imports: [
+    CommonModule,
+    GameStatsComponent,
+    GameCanvasComponent,
+    ColorSelectorComponent,
+    ListPlayersComponent,
+  ],
   templateUrl: './tiles.component.html',
-  styleUrl: './tiles.component.scss'
+  styleUrl: './tiles.component.scss',
 })
 export class TilesComponent {
-  @Input() playerName: string = "";
+  @Input() playerName: string = '';
 
   coords: any = { x: 0, y: 0 };
   fps: number = 0;

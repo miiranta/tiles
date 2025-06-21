@@ -8,8 +8,6 @@ export const RENDER_DISTANCE: number = 20;
 
 export const DRAW_ALL_MAP: boolean = true;
 
-// Multiplayer settings
-export const MIN_UPDATE_INTERVAL: number = 50; 
+export const MIN_UPDATE_INTERVAL: number = 50;
 export const MIN_MOVEMENT_THRESHOLD: number = 0.1; 
-export const PLAYER_CORRECTION_TIMEOUT: number = 1000; 
-export const PLAYER_MOVE_DURATION: number = 300; 
+export const PLAYER_MOVE_DURATION: number = 300;

@@ -26,12 +26,10 @@ export class Game {
     }
     
     this.canvas = canvas.nativeElement;
-    if(!this.canvas) { return; }
-
+    if(!this.canvas) { return; }    
     this.apiMap = apiMap;
     this.apiPlayer = apiPlayer;
     this.playerService = playerService;
-    this.apiPlayer = apiPlayer;
     if(!this.apiMap || !this.apiPlayer) { return; }
 
     this.map = new TileMap(this.apiMap, this.apiPlayer, this.playerService);

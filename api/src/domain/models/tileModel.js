@@ -48,6 +48,5 @@ tileSchema.methods.setDefaultType = function() {
 const Tile = mongoose.model('Tile', tileSchema);
 
 module.exports = { 
-  Tile, 
-  tileSchema 
+  Tile
 };

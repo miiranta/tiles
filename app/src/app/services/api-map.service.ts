@@ -7,10 +7,8 @@ const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
   providedIn: 'root'
 })
 export class ApiMapService {
-
   constructor() { }
 
-  // REST API methods for map operations
   async getMapTiles(x: number, y: number, range: number){
     return await fetch(`${BASE_URL}/map/${x}/${y}/${range}`, {
       method: 'GET',

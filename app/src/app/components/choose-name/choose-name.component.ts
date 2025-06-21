@@ -22,28 +22,23 @@ export class ChooseNameComponent implements OnDestroy {
     private loadingService: LoadingService,
     private apiPlayerService: ApiPlayerService,
   ) {}
-
   onNameInput() {
-    // Clear previous timeout
     if (this.checkNameTimeout) {
       clearTimeout(this.checkNameTimeout);
     }
 
     const trimmedName = this.name.trim();
     
-    // Reset status if name is empty
     if (!trimmedName) {
       this.nameStatus = 'idle';
       return;
     }
 
-    // Check length requirements
     if (trimmedName.length < 2 || trimmedName.length > 20) {
       this.nameStatus = 'invalid';
       return;
     }
 
-    // Set checking state and delay the API call
     this.isCheckingName = true;
     this.nameStatus = 'idle';
     
@@ -68,16 +63,15 @@ export class ChooseNameComponent implements OnDestroy {
         }
       } else {
         this.nameStatus = 'invalid';
-      }
+      }    
     } catch (error) {
-      console.error('Error checking name availability:', error);
+      console.error('Erro ao verificar disponibilidade do nome:', error);
       this.isCheckingName = false;
-      this.nameStatus = 'idle'; // Reset to idle on error
+      this.nameStatus = 'idle';
     }
   }  
-    async openGame() {
+  async openGame() {
     if (this.name.trim() && !this.loadingService.isLoading() && (this.nameStatus === 'available' || this.nameStatus === 'exists')) {
-      // Emit event to parent component
       this.passwordNeeded.emit({
         playerName: this.name.trim(),
         isNewPlayer: this.nameStatus === 'available'

@@ -3,7 +3,6 @@ const SHOW_SUCCESS = true;
 const SHOW_ERROR = true;
 const SHOW_WARN = true;
 
-// Console colors utility
 const colors = {
   reset: '\x1b[0m',
   white: '\x1b[37m',

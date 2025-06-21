@@ -53,18 +53,17 @@ class MapManager {
           index++;
         }
       }
-      
-      return tiles;
+        return tiles;
     } catch (error) {
-      log.error('mapManager', `Error getting tiles: ${error.message}`);
+      log.error('mapManager', `Erro ao obter tiles: ${error.message}`);
       return [];
     }
   }
 
-  async placeTile(x, y, type, playerName = 'anonymous') {
+  async placeTile(x, y, type, playerName = 'anonymous') {    
     try {
       if (!COLORS.includes(type)) {
-        throw new Error(`Invalid tile type: ${type}`);
+        throw new Error(`Tipo de tile inválido: ${type}`);
       }
       
       const tile = await Tile.findOneAndUpdate(
@@ -78,10 +77,9 @@ class MapManager {
           upsert: true, 
           new: true,
           runValidators: true
-        }
+        }      
       );
       
-      // Update player stats
       if (this.statsManager && playerName !== 'anonymous') {
         this.statsManager.updateTilesPlaced(playerName, type);
       }
@@ -89,7 +87,7 @@ class MapManager {
       return true;
       
     } catch (error) {
-      log.error('mapManager', `Error placing tile: ${error.message}`);
+      log.error('mapManager', `Erro ao colocar tile: ${error.message}`);
       return false;
     }
   }

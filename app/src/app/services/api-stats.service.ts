@@ -11,10 +11,8 @@ export class ApiStatsService {
   constructor() { }
 
   async getPlayerStats(playerName: string): Promise<PlayerStats> {
-    const response = await fetch(`${this.baseUrl}/stats/${playerName}`);
-
-    if (!response.ok) {
-      throw new Error(`Error fetching player stats: ${response.statusText}`);
+    const response = await fetch(`${this.baseUrl}/stats/${playerName}`);    if (!response.ok) {
+      throw new Error(`Erro ao buscar estatísticas do jogador: ${response.statusText}`);
     }
 
     const data: PlayerStats = await response.json();

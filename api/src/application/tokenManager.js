@@ -27,9 +27,7 @@ class TokenManager {
             this.connectedPlayers.set(playerName, {
                 token,
                 connectedAt: new Date()
-            });
-
-            log.success('tokenManager', `Token generated for player: ${playerName}`);
+            });            log.success('tokenManager', `Token gerado para jogador: ${playerName}`);
 
             return {
                 success: true,
@@ -38,10 +36,10 @@ class TokenManager {
             };
 
         } catch (error) {
-            log.error('tokenManager', `Error generating token: ${error.message}`);
+            log.error('tokenManager', `Erro ao gerar token: ${error.message}`);
             return {
                 success: false,
-                message: 'Failed to generate token'
+                message: 'Falha ao gerar token'
             };
         }
     }    
@@ -49,10 +47,9 @@ class TokenManager {
     verifyToken(token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            
-            const playerInfo = this.connectedPlayers.get(decoded.playerName);
+              const playerInfo = this.connectedPlayers.get(decoded.playerName);
             if (!playerInfo || playerInfo.token !== token) {
-                return { valid: false, message: 'Token not found or expired' };
+                return { valid: false, message: 'Token não encontrado ou expirado' };
             }
 
             return {
@@ -61,24 +58,23 @@ class TokenManager {
             };
 
         } catch (error) {
-            log.error('tokenManager', `Token verification failed: ${error.message}`);
-            return { valid: false, message: 'Invalid token' };
+            log.error('tokenManager', `Falha na verificação do token: ${error.message}`);
+            return { valid: false, message: 'Token inválido' };
         }
     }    
     
-    revokeToken(playerName) {
-        try {
+    revokeToken(playerName) {        try {
             if (this.connectedPlayers.has(playerName)) {
                 this.connectedPlayers.delete(playerName);
                 
-                log.info('tokenManager', `Token revoked for player: ${playerName}`);
+                log.info('tokenManager', `Token revogado para jogador: ${playerName}`);
                 return playerName;
             }
 
             return null;
 
         } catch (error) {
-            log.error('tokenManager', `Error revoking token: ${error.message}`);
+            log.error('tokenManager', `Erro ao revogar token: ${error.message}`);
             return null;
         }
     }

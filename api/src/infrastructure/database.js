@@ -9,38 +9,35 @@ class Database {
   async connect() {
     try {
       const connectionString = process.env.MONGODB_CONNECTION_STRING;
-      
-      if (!connectionString) {
-        throw new Error('MONGODB_CONNECTION_STRING is not defined in environment variables');
+        if (!connectionString) {
+        throw new Error('MONGODB_CONNECTION_STRING não está definida nas variáveis de ambiente');
       }
-      
-      this.connection = await mongoose.connect(connectionString);
+        this.connection = await mongoose.connect(connectionString);
 
-      log.success('database', 'Connected to MongoDB successfully');
+      log.success('database', 'Conectado ao MongoDB com sucesso');
       
       mongoose.connection.on('error', (err) => {
-        log.error('database', `MongoDB connection error: ${err.message}`);
+        log.error('database', `Erro de conexão com MongoDB: ${err.message}`);
       });
 
       mongoose.connection.on('disconnected', () => {
-        log.info('database', 'MongoDB disconnected');
-      });
-
+        log.info('database', 'MongoDB desconectado');
+      });      
       return this.connection;
     } catch (error) {
-      log.error('database', `Failed to connect to MongoDB: ${error.message}`);
+      log.error('database', `Falha ao conectar ao MongoDB: ${error.message}`);
       throw error;
     }
   }
 
-  async disconnect() {
+  async disconnect() {    
     try {
       if (this.connection) {
         await mongoose.connection.close();
-        log.info('database', 'Database connection closed successfully');
+        log.info('database', 'Conexão com banco de dados fechada com sucesso');
       }
     } catch (error) {
-      log.error('database', `Error closing database connection: ${error.message}`);
+      log.error('database', `Erro ao fechar conexão com banco de dados: ${error.message}`);
       throw error;
     }
   }

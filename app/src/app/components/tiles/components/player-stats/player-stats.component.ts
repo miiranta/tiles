@@ -1,8 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, Inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ApiStatsService } from '../../../../services/api-stats.service';
 import { PlayerStats } from '../../interfaces/player-stats.interface';
-import { LoadingService } from '../../../../services/loading.service';
 
 @Component({
   selector: 'app-player-stats',
@@ -53,12 +52,11 @@ export class PlayerStatsComponent implements OnInit, OnChanges {
             this.playerStats = stats;
             this.isLoading = false;
         }, 300);
-      }
-    ).catch(
+      }    ).catch(
       (error) => {
-        this.error = 'Failed to load player statistics';
+        this.error = 'Falha ao carregar estatísticas do jogador';
         this.isLoading = false;
-        console.error('Error loading player stats:', error);
+        console.error('Erro ao carregar estatísticas do jogador:', error);
       }
     );
   }
@@ -66,10 +64,8 @@ export class PlayerStatsComponent implements OnInit, OnChanges {
   onClose() {
     this.closeStats.emit();
   }
-
   getTileTypes(): string[] {
     if (!this.playerStats?.tilesPlaced) return [];
-    // Sort by count (descending)
     return Object.keys(this.playerStats.tilesPlaced)
       .sort((a, b) => this.playerStats!.tilesPlaced[b] - this.playerStats!.tilesPlaced[a]);
   }

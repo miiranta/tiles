@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -42,9 +42,8 @@ export class PasswordComponent {
         await this.createPlayerAccount();
       } else {
         await this.loginPlayer();
-      }
-    } catch (error) {
-      console.error('Password handling error:', error);
+      }    } catch (error) {
+      console.error('Erro:', error);
       this.popupService.error(
         'Erro',
         'Erro de conexão. Tente novamente.'
@@ -52,11 +51,9 @@ export class PasswordComponent {
       this.isLoading = false;
     }
   }
-
   private async createPlayerAccount() {
     this.loadingService.show('Criando conta...');
     
-    // Call API to create the player account with password
     const response = await this.apiPlayerService.createPlayerWithPassword(this.playerName, this.password);
     const data = await response.json();
     
@@ -77,11 +74,9 @@ export class PasswordComponent {
       );
     }
   }
-
   private async loginPlayer() {
     this.loadingService.show('Verificando senha...');
     
-    // Call API to verify the password
     const response = await this.apiPlayerService.authenticatePlayer(this.playerName, this.password);
     const data = await response.json();
     

@@ -191,11 +191,9 @@
     }
   }
   
-  .tiles-breakdown {
-    max-height: 200px;
+  .tiles-breakdown {    max-height: 200px;
     overflow-y: auto;
     
-    // Custom scrollbar styling
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
     
@@ -279,7 +277,6 @@
   100% { transform: rotate(360deg); }
 }
 
-// Responsive design
 @media (max-width: 600px) {
   .player-stats-modal {
     width: 95%;

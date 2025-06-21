@@ -21,12 +21,10 @@ export class TileMap {
   }
 
   fetchTile(x: number, y: number) {
-    const key = `${x},${y}`;
-    if (this.map.has(key)) {
+    const key = `${x},${y}`;    if (this.map.has(key)) {
       return this.map.get(key)!;
     }
 
-    // Create a new tile and add it to the map
     const center_x = Math.floor(x / CHUNK_SIZE) * CHUNK_SIZE;
     const center_y = Math.floor(y / CHUNK_SIZE) * CHUNK_SIZE;
     const chunk_key = `${center_x},${center_y}`;
@@ -51,15 +49,12 @@ export class TileMap {
     return new Tile(x, y);
   }
   
-  placeTile(x: number, y: number, type: string) {
-    const key = `${x},${y}`;
+  placeTile(x: number, y: number, type: string) {    const key = `${x},${y}`;
 
-    // Check if the tile exists
     if (!this.map.has(key)) return;
 
-    // Check if the tile type is the same
     if (this.map.get(key)?.type === type) return;
-      // Get JWT token from player service
+
     const token = this.playerService.getJwtToken();
     if (!token) return;
     
@@ -69,10 +64,8 @@ export class TileMap {
   placeTileLocal(x: number, y: number, type: string) {
     const key = `${x},${y}`;
 
-    // Check if the tile exists
     if (!this.map.has(key)) return;
 
-    // Check if the tile type is the same
     if (this.map.get(key)?.type === type) return;
 
     this.map.set(key, new Tile(x, y, type));

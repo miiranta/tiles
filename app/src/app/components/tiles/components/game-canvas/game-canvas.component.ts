@@ -1,4 +1,4 @@
-import { Component, inject, Input, ViewChild, Output, EventEmitter, OnDestroy, OnInit, OnChanges } from '@angular/core';
+import { Component, inject, Input, ViewChild, Output, EventEmitter, OnDestroy, OnChanges } from '@angular/core';
 
 import { ApiMapService } from '../../../../services/api-map.service';
 import { ApiPlayerService } from '../../../../services/api-player.service';

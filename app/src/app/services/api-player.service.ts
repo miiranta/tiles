@@ -9,30 +9,26 @@ const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
   providedIn: 'root'
 })
 export class ApiPlayerService {
-
   constructor() {
     this.socket = io(BASE_URL);
   }
 
-  // WebSocket
   private socket: Socket;
 
   emit(event: string, data: any) {
     this.socket.emit(event, data);
   }
-
   on(event: string): Observable<any> {
     return new Observable((observer) => {
       this.socket.on(event, (data) => {
         observer.next(data);
       });
 
-      // Handle cleanup
       return () => {
         this.socket.off(event);
       };
     });
-  }  
+  }
 
   async checkPlayerNameAvailability(playerName: string): Promise<any> {
     return await fetch(`${BASE_URL}/player/${encodeURIComponent(playerName)}`, {

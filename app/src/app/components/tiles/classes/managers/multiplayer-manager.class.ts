@@ -1,7 +1,7 @@
 import { Game } from "../game.class";
 import { Tile } from "../map/tile.class";
 import { MultiplayerPlayer } from "../../interfaces/multiplayer-player.interface";
-import { MIN_UPDATE_INTERVAL, MIN_MOVEMENT_THRESHOLD, PLAYER_CORRECTION_TIMEOUT, PLAYER_MOVE_DURATION } from "../../constants/game-config.consts";
+import { MIN_UPDATE_INTERVAL, MIN_MOVEMENT_THRESHOLD, PLAYER_MOVE_DURATION } from "../../constants/game-config.consts";
 
 export class MultiplayerManager {
   private game!: Game;
@@ -9,9 +9,8 @@ export class MultiplayerManager {
   private lastSentTime: number = 0;
 
   public all_players: Map<string, MultiplayerPlayer> = new Map();
-
   constructor() { 
-    // Do nothing here
+    
   }
 
   setGameTarget(game: Game) {
@@ -19,13 +18,12 @@ export class MultiplayerManager {
 
     this.listenPlayerUpdates();
     this.listenPlayerRemove();
-    this.listenMapPlace();
-  }  
+    this.listenMapPlace();  }  
   
-  // Player position updates
   sendPlayerUpdate() {
     const player_coords = this.game.player.getPositionFloat();
-    const currentTime = Date.now();    // Check if enough time has passed since last update
+    const currentTime = Date.now();
+    
     if (currentTime - this.lastSentTime < MIN_UPDATE_INTERVAL) {
       return;
     }
@@ -45,23 +43,17 @@ export class MultiplayerManager {
       this.lastSentTime = currentTime;
     }  
   } 
-  
-  updatePlayerPositions() {
+    updatePlayerPositions() {
     const currentTime = Date.now();
-    
-    this.all_players.forEach((player, playerName) => {
-      // Calculate progress along the trajectory (0 to 1)
+      this.all_players.forEach((player) => {
       const elapsed = currentTime - player.moveStartTime;
       const progress = Math.min(elapsed / player.moveDuration, 1.0);
       
-      // Use smooth easing function (ease-out)
       const easedProgress = 1 - Math.pow(1 - progress, 3);
       
-      // Interpolate position
       player.x = player.startX + (player.targetX - player.startX) * easedProgress;
       player.y = player.startY + (player.targetY - player.startY) * easedProgress;
       
-      // If movement is complete, ensure exact target position
       if (progress >= 1.0) {
         player.x = player.targetX;
         player.y = player.targetY;
@@ -73,9 +65,7 @@ export class MultiplayerManager {
 
       if (data.playerName === this.game.player.playerName) {
         return;
-      }
-      
-      // Convert received position to target tile (integer coordinates)
+      }      
       const targetX = Math.round(data.x);
       const targetY = Math.round(data.y);
       
@@ -110,17 +100,15 @@ export class MultiplayerManager {
       }
     });
   }
-
-  // Listen for player disconnect notifications
   listenPlayerRemove() {
     this.game.apiPlayer.on('player-remove').subscribe((data: any) => {
       if (data.playerName && this.all_players.has(data.playerName)) {
         this.all_players.delete(data.playerName);
-        console.log(`Player ${data.playerName} disconnected`);
+        console.log(`Jogador ${data.playerName} desconectado`);
       }
     });
   }
-  // Tile update
+  
   listenMapPlace() {
     this.game.apiPlayer.on('map-place').subscribe((data: any) => {
       const tile = new Tile(data.x, data.y, data.type);

@@ -3,8 +3,3 @@ export interface Tile {
   y: number;
   type: string;
 }
-
-export interface TilePosition {
-  x: number;
-  y: number;
-}

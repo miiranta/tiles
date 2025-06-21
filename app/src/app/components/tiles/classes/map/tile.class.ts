@@ -7,10 +7,7 @@ export class Tile implements ITile {
   
   constructor(x:number, y:number, type:string='notset') {
     this.x = x;
-    this.y = y;
-
-    if (type == 'notset') {
-        // Set tile type based on coordinates - grid of white and light gray
+    this.y = y;    if (type == 'notset') {
         if ((x % 2 + 2) % 2 === (y % 2 + 2) % 2) {
         this.type = 'white';
         } else {
