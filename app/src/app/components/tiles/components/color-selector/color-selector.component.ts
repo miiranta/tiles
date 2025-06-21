@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-color-selector',
   imports: [CommonModule],
   templateUrl: './color-selector.component.html',
-  styleUrl: './color-selector.component.scss'
+  styleUrl: './color-selector.component.scss',
 })
 export class ColorSelectorComponent {
   @Input() colors: string[] = [];

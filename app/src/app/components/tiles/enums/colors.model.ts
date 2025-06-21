@@ -9,5 +9,5 @@ export const COLORS: string[] = [
   'blue',
   'yellow',
   'purple',
-  'orange'
+  'orange',
 ];

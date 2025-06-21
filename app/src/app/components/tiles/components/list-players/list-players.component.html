@@ -2,29 +2,37 @@
   <div class="players-header">
     <h3>Players ({{ totalPlayers }})</h3>
   </div>
-    <div class="players-container">
+  <div class="players-container">
     <!-- Current player -->
     <div class="player-item current-player">
       <div class="player-status online"></div>
       <span class="player-name">{{ currentPlayerName }} (You)</span>
-      <button class="stats-btn" (click)="openPlayerStats(currentPlayerName)" title="View Stats">
+      <button
+        class="stats-btn"
+        (click)="openPlayerStats(currentPlayerName)"
+        title="View Stats"
+      >
         📊
       </button>
     </div>
-    
+
     <!-- Other players -->
-    <div 
-      *ngFor="let player of allPlayers" 
+    <div
+      *ngFor="let player of allPlayers"
       class="player-item"
       [class.inactive]="!isPlayerActive(player)"
     >
       <div class="player-status" [class]="getPlayerStatus(player)"></div>
       <span class="player-name">{{ player.playerName }}</span>
-      <button class="stats-btn" (click)="openPlayerStats(player.playerName)" title="View Stats">
+      <button
+        class="stats-btn"
+        (click)="openPlayerStats(player.playerName)"
+        title="View Stats"
+      >
         📊
       </button>
     </div>
-    
+
     <!-- Empty state -->
     <div *ngIf="allPlayers.length === 0" class="no-players">
       No other players online
@@ -33,7 +41,7 @@
 </div>
 
 <!-- Player Stats Modal -->
-<app-player-stats 
+<app-player-stats
   [playerName]="selectedPlayerName"
   [isVisible]="showStatsModal"
   (closeStats)="closePlayerStats()"

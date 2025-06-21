@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoadingService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -11,7 +11,7 @@ export class LoadingService {
   public loading$ = this.loadingSubject.asObservable();
   public message$ = this.messageSubject.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   show(message: string = 'Carregando...'): void {
     this.messageSubject.next(message);

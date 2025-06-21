@@ -7,14 +7,14 @@ import { PasswordComponent } from '../../components/password/password.component'
   selector: 'app-home-page',
   imports: [CommonModule, ChooseNameComponent, PasswordComponent],
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.scss'
+  styleUrl: './home-page.component.scss',
 })
 export class HomePageComponent {
   showPasswordComponent: boolean = false;
   playerName: string = '';
   isNewPlayer: boolean = false;
 
-  onPasswordNeeded(data: { playerName: string, isNewPlayer: boolean }) {
+  onPasswordNeeded(data: { playerName: string; isNewPlayer: boolean }) {
     this.playerName = data.playerName;
     this.isNewPlayer = data.isNewPlayer;
     this.showPasswordComponent = true;

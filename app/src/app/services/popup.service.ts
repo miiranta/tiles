@@ -9,17 +9,17 @@ export interface PopupData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PopupService {
   private popupSubject = new BehaviorSubject<PopupData | null>(null);
   public popup$ = this.popupSubject.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   show(data: PopupData): void {
     this.popupSubject.next(data);
-    
+
     if (data.duration && data.duration > 0) {
       setTimeout(() => {
         this.hide();

@@ -7,8 +7,6 @@ import { PopupComponent } from './components/popup/popup.component';
   selector: 'app-root',
   imports: [RouterOutlet, LoadingComponent, PopupComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  
-}
+export class AppComponent {}

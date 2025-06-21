@@ -1,32 +1,32 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlayerService {
-    private playerName = '';
-    private jwtToken = '';
+  private playerName = '';
+  private jwtToken = '';
 
-    constructor() { }
+  constructor() {}
 
-    setPlayerName(name: string): void {
-        this.playerName = name;
-    }
+  setPlayerName(name: string): void {
+    this.playerName = name;
+  }
 
-    getPlayerName(): string {
-        return this.playerName || '';
-    }
+  getPlayerName(): string {
+    return this.playerName || '';
+  }
 
-    clearPlayerName(): void {
-        this.playerName = '';
-        this.jwtToken = '';
-    }
+  clearPlayerName(): void {
+    this.playerName = '';
+    this.jwtToken = '';
+  }
 
-    setJwtToken(token: string): void {
-        this.jwtToken = token;
-    }
+  setJwtToken(token: string): void {
+    this.jwtToken = token;
+  }
 
-    getJwtToken(): string {
-        return this.jwtToken || '';
-    }
+  getJwtToken(): string {
+    return this.jwtToken || '';
+  }
 }

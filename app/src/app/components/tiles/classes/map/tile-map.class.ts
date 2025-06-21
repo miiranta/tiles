@@ -1,11 +1,11 @@
-import { CHUNK_SIZE } from "../../constants/game-config.consts";
-import { Tile } from "./tile.class";
+import { CHUNK_SIZE } from '../../constants/game-config.consts';
+import { Tile } from './tile.class';
 
 export class TileMap {
   private apiMap: any;
   private apiPlayer: any;
   private playerService: any;
-  
+
   constructor(apiMap: any, apiPlayer: any, playerService: any) {
     this.apiMap = apiMap;
     this.apiPlayer = apiPlayer;
@@ -21,7 +21,8 @@ export class TileMap {
   }
 
   fetchTile(x: number, y: number) {
-    const key = `${x},${y}`;    if (this.map.has(key)) {
+    const key = `${x},${y}`;
+    if (this.map.has(key)) {
       return this.map.get(key)!;
     }
 
@@ -32,24 +33,29 @@ export class TileMap {
     if (!this.chunkFetchPending.includes(chunk_key)) {
       this.chunkFetchPending.push(chunk_key);
 
-      this.apiMap.getMapTiles(center_x, center_y, CHUNK_SIZE).then(async (response: Response) => {
-        if(response.status == 200) {
-          const json = response.json();
-          json.then((data) => {
-            for (const tileData of data) {
-              const tile = new Tile(tileData.x, tileData.y, tileData.type);
-              this.map.set(`${tile.x},${tile.y}`, tile);
-            }
-            this.chunkFetchPending = this.chunkFetchPending.filter((key) => key !== chunk_key);
-          });
-        }
-      });
+      this.apiMap
+        .getMapTiles(center_x, center_y, CHUNK_SIZE)
+        .then(async (response: Response) => {
+          if (response.status == 200) {
+            const json = response.json();
+            json.then((data) => {
+              for (const tileData of data) {
+                const tile = new Tile(tileData.x, tileData.y, tileData.type);
+                this.map.set(`${tile.x},${tile.y}`, tile);
+              }
+              this.chunkFetchPending = this.chunkFetchPending.filter(
+                (key) => key !== chunk_key,
+              );
+            });
+          }
+        });
     }
 
     return new Tile(x, y);
   }
-  
-  placeTile(x: number, y: number, type: string) {    const key = `${x},${y}`;
+
+  placeTile(x: number, y: number, type: string) {
+    const key = `${x},${y}`;
 
     if (!this.map.has(key)) return;
 
@@ -57,7 +63,7 @@ export class TileMap {
 
     const token = this.playerService.getJwtToken();
     if (!token) return;
-    
+
     this.apiPlayer.sendMapPlace(token, x, y, type);
   }
 
@@ -70,5 +76,4 @@ export class TileMap {
 
     this.map.set(key, new Tile(x, y, type));
   }
-
 }

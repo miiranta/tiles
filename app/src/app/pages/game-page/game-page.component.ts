@@ -7,12 +7,15 @@ import { PlayerService } from '../../services/player.service';
   selector: 'app-game-page',
   imports: [TilesComponent],
   templateUrl: './game-page.component.html',
-  styleUrl: './game-page.component.scss'
+  styleUrl: './game-page.component.scss',
 })
 export class GamePageComponent implements OnInit {
   playerName: string = '';
 
-  constructor(private playerService: PlayerService, private router: Router) {}
+  constructor(
+    private playerService: PlayerService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.playerName = this.playerService.getPlayerName();

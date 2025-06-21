@@ -1,4 +1,13 @@
-import { Component, inject, Input, ViewChild, Output, EventEmitter, OnDestroy, OnChanges } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  ViewChild,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  OnChanges,
+} from '@angular/core';
 
 import { ApiMapService } from '../../../../services/api-map.service';
 import { ApiPlayerService } from '../../../../services/api-player.service';
@@ -12,12 +21,12 @@ import { LoadingService } from '../../../../services/loading.service';
   selector: 'app-game-canvas',
   imports: [],
   templateUrl: './game-canvas.component.html',
-  styleUrl: './game-canvas.component.scss'
+  styleUrl: './game-canvas.component.scss',
 })
 export class GameCanvasComponent implements OnChanges, OnDestroy {
   @ViewChild('gameCanvas') gameCanvas: any;
-  @Input() playerName: string = "";
-  @Input() selectedColor: string = COLORS[0];  
+  @Input() playerName: string = '';
+  @Input() selectedColor: string = COLORS[0];
   @Output() coordsChanged = new EventEmitter<any>();
   @Output() fpsChanged = new EventEmitter<number>();
   @Output() gameInitialized = new EventEmitter<any>();
@@ -32,14 +41,25 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
   placeTileTimeout: any = null;
   statsInterval: any = null;
   isGameInitialized: boolean = false;
-  
+
   ngAfterViewInit() {
     this.initializeGame();
-  }  
-  
+  }
+
   private initializeGame() {
-    if (this.playerName && this.playerName.trim() && this.gameCanvas && !this.isGameInitialized) {
-      this.game = new Game(this.gameCanvas, this.apiMap, this.apiPlayer, this.playerService, this.playerName);
+    if (
+      this.playerName &&
+      this.playerName.trim() &&
+      this.gameCanvas &&
+      !this.isGameInitialized
+    ) {
+      this.game = new Game(
+        this.gameCanvas,
+        this.apiMap,
+        this.apiPlayer,
+        this.playerService,
+        this.playerName,
+      );
       this.isGameInitialized = true;
       this.gameInitialized.emit(this.game);
 
@@ -47,16 +67,16 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
       window.addEventListener('resize', this.canvasSetSize.bind(this));
 
       this.statsInterval = setInterval(() => {
-          this.coords = this.game?.player.getPosition();
-          this.fps = Math.round(this.game?.drawManager.fps ?? 0);
-          this.coordsChanged.emit(this.coords);
-          this.fpsChanged.emit(this.fps);
-        }, 1000 / 10);
+        this.coords = this.game?.player.getPosition();
+        this.fps = Math.round(this.game?.drawManager.fps ?? 0);
+        this.coordsChanged.emit(this.coords);
+        this.fpsChanged.emit(this.fps);
+      }, 1000 / 10);
 
-        this.loadingService.show('Iniciando o jogo...');
-        setTimeout(() => {
-            this.loadingService.hide();
-        }, 2000);
+      this.loadingService.show('Iniciando o jogo...');
+      setTimeout(() => {
+        this.loadingService.hide();
+      }, 2000);
     }
   }
 
@@ -75,7 +95,7 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
     }
     window.removeEventListener('resize', this.canvasSetSize.bind(this));
   }
-  
+
   canvasSetSize() {
     if (this.gameCanvas) {
       this.gameCanvas.nativeElement.width = window.innerWidth;

@@ -1,6 +1,6 @@
-import { TICKS_PER_SECOND } from "../../constants/game-config.consts";
-import { Player as IPlayer } from "../../interfaces/player.interface";
-import { Position } from "../../interfaces/player.interface";
+import { TICKS_PER_SECOND } from '../../constants/game-config.consts';
+import { Player as IPlayer } from '../../interfaces/player.interface';
+import { Position } from '../../interfaces/player.interface';
 
 export class Player implements IPlayer {
   private x_speed: number = 0;
@@ -27,10 +27,10 @@ export class Player implements IPlayer {
   updateSpeed(keyMap: Map<string, boolean>) {
     this.x_speed *= 0.85;
     this.y_speed *= 0.85;
-    if(Math.abs(this.x_speed) < 0.1) {
+    if (Math.abs(this.x_speed) < 0.1) {
       this.x_speed = 0;
     }
-    if(Math.abs(this.y_speed) < 0.1) {
+    if (Math.abs(this.y_speed) < 0.1) {
       this.y_speed = 0;
     }
 
@@ -48,7 +48,8 @@ export class Player implements IPlayer {
     }
   }
 
-  updatePosition() {    this.x += this.x_speed / TICKS_PER_SECOND;
+  updatePosition() {
+    this.x += this.x_speed / TICKS_PER_SECOND;
     this.y += this.y_speed / TICKS_PER_SECOND;
 
     let x_int = Math.round(this.x);
@@ -56,17 +57,16 @@ export class Player implements IPlayer {
 
     if (this.x_speed > 0) {
       x_int += 1;
-    }else if (this.x_speed < 0) {
+    } else if (this.x_speed < 0) {
       x_int -= 1;
     }
     if (this.y_speed > 0) {
       y_int += 1;
-    }else if (this.y_speed < 0) {
+    } else if (this.y_speed < 0) {
       y_int -= 1;
     }
 
     this.x = x_int * 0.02 + this.x * 0.98;
     this.y = y_int * 0.02 + this.y * 0.98;
   }
-
 }

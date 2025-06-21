@@ -1,5 +1,5 @@
-const express = require('express');
-const { log } = require('../utils/colorLogging');
+const express = require("express");
+const { log } = require("../utils/colorLogging");
 
 class StatsController {
   constructor(app, statsManager) {
@@ -10,31 +10,38 @@ class StatsController {
   setupRoutes() {
     const router = express.Router();
 
-    router.get('/stats/:playerName', async (req, res) => {
+    router.get("/stats/:playerName", async (req, res) => {
       try {
         const { playerName } = req.params;
 
         if (!playerName) {
-          return res.status(400).json({ error: 'Nome do jogador é obrigatório' });
+          return res
+            .status(400)
+            .json({ error: "Nome do jogador é obrigatório" });
         }
 
         const stats = await this.statsManager.getPlayerStats(playerName);
-        
+
         if (!stats) {
-          return res.status(404).json({ error: 'Jogador não encontrado' });
+          return res.status(404).json({ error: "Jogador não encontrado" });
         }
 
         res.json(stats);
-        log.info('statsController', `Estatísticas obtidas para jogador: ${playerName}`);
-
+        log.info(
+          "statsController",
+          `Estatísticas obtidas para jogador: ${playerName}`,
+        );
       } catch (error) {
-        log.error('statsController', `Erro ao obter estatísticas do jogador: ${error.message}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
+        log.error(
+          "statsController",
+          `Erro ao obter estatísticas do jogador: ${error.message}`,
+        );
+        res.status(500).json({ error: "Erro interno do servidor" });
       }
-    });    
-    
+    });
+
     this.app.use(router);
-    log.info('statsController', 'Endpoints de estatísticas configurados');
+    log.info("statsController", "Endpoints de estatísticas configurados");
   }
 }
 

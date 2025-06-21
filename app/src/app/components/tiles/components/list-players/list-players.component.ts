@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MultiplayerManager } from '../../classes/managers/multiplayer-manager.class';
 import { MultiplayerPlayer } from '../../interfaces/multiplayer-player.interface';
@@ -8,18 +14,19 @@ import { PlayerStatsComponent } from '../player-stats/player-stats.component';
   selector: 'app-list-players',
   imports: [CommonModule, PlayerStatsComponent],
   templateUrl: './list-players.component.html',
-  styleUrl: './list-players.component.scss'
+  styleUrl: './list-players.component.scss',
 })
 export class ListPlayersComponent implements OnInit, OnDestroy {
   @Input() multiplayerManager!: MultiplayerManager;
   @Input() currentPlayerName: string = '';
 
   private updateInterval: any;
-  
+
   showStatsModal: boolean = false;
   selectedPlayerName: string = '';
 
-  constructor(private cdr: ChangeDetectorRef) {}  ngOnInit() {
+  constructor(private cdr: ChangeDetectorRef) {}
+  ngOnInit() {
     this.updateInterval = setInterval(() => {
       this.cdr.detectChanges();
     }, 1000);
@@ -39,7 +46,8 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
 
   get totalPlayers(): number {
     return this.allPlayers.length + 1;
-  }  isPlayerActive(player: MultiplayerPlayer): boolean {
+  }
+  isPlayerActive(player: MultiplayerPlayer): boolean {
     const thirtySecondsAgo = Date.now() - 30000;
     return player.last_update > thirtySecondsAgo;
   }
@@ -47,7 +55,7 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
   getPlayerStatus(player: MultiplayerPlayer): string {
     return this.isPlayerActive(player) ? 'online' : 'inactive';
   }
-  
+
   openPlayerStats(playerName: string) {
     if (this.showStatsModal) {
       this.showStatsModal = false;

@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiPlayerService {
   constructor() {
@@ -34,22 +34,25 @@ export class ApiPlayerService {
     return await fetch(`${BASE_URL}/player/${encodeURIComponent(playerName)}`, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json'
-      }
+        Accept: 'application/json',
+      },
     });
   }
 
-  async createPlayerWithPassword(playerName: string, password: string): Promise<any> {
+  async createPlayerWithPassword(
+    playerName: string,
+    password: string,
+  ): Promise<any> {
     return await fetch(`${BASE_URL}/player`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         playerName,
-        password
-      })
+        password,
+      }),
     });
   }
 
@@ -58,21 +61,20 @@ export class ApiPlayerService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         playerName,
-        password
-      })
+        password,
+      }),
     });
   }
 
   sendPlayerUpdate(token: string, x: number, y: number) {
     this.socket.emit('player-update', { token, x, y });
   }
-  
+
   sendMapPlace(token: string, x: number, y: number, type: string) {
     this.socket.emit('map-place', { token, x, y, type });
   }
-
 }

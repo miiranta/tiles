@@ -1,5 +1,5 @@
-const { Player } = require('../domain/models/playerModel');
-const { log } = require('../utils/colorLogging');
+const { Player } = require("../domain/models/playerModel");
+const { log } = require("../utils/colorLogging");
 
 class StatsManager {
   constructor(database) {
@@ -9,31 +9,43 @@ class StatsManager {
   async updateDistanceTraveled(playerName, distance) {
     try {
       const player = await Player.findByName(playerName);
-        if (player) {
+      if (player) {
         await player.updateDistanceTraveled(distance);
-        log.info('statsManager', `Distância atualizada para ${playerName}: +${distance.toFixed(2)}`);
+        log.info(
+          "statsManager",
+          `Distância atualizada para ${playerName}: +${distance.toFixed(2)}`,
+        );
       }
     } catch (error) {
-      log.error('statsManager', `Erro ao atualizar distância percorrida: ${error.message}`);
+      log.error(
+        "statsManager",
+        `Erro ao atualizar distância percorrida: ${error.message}`,
+      );
     }
   }
 
   async updateTilesPlaced(playerName, tileType) {
     try {
       const player = await Player.findByName(playerName);
-        if (player) {
+      if (player) {
         await player.updateTilesPlaced(tileType);
-        log.info('statsManager', `Tiles colocados atualizados para ${playerName}: ${tileType}`);
+        log.info(
+          "statsManager",
+          `Tiles colocados atualizados para ${playerName}: ${tileType}`,
+        );
       }
     } catch (error) {
-      log.error('statsManager', `Erro ao atualizar tiles colocados: ${error.message}`);
+      log.error(
+        "statsManager",
+        `Erro ao atualizar tiles colocados: ${error.message}`,
+      );
     }
   }
 
   async getPlayerStats(playerName) {
     try {
       const player = await Player.findByName(playerName);
-      
+
       if (!player) {
         return null;
       }
@@ -43,11 +55,16 @@ class StatsManager {
         distanceTraveled: player.stats.distanceTraveled || 0,
         tilesPlaced: Object.fromEntries(player.stats.tilesPlaced || new Map()),
         lastLogin: player.lastLogin,
-        createdAt: player.createdAt
-      };    } catch (error) {
-      log.error('statsManager', `Erro ao obter estatísticas do jogador: ${error.message}`);
+        createdAt: player.createdAt,
+      };
+    } catch (error) {
+      log.error(
+        "statsManager",
+        `Erro ao obter estatísticas do jogador: ${error.message}`,
+      );
       return null;
-    }  }
+    }
+  }
 }
 
 module.exports = { StatsManager };

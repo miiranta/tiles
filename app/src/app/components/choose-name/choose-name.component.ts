@@ -8,11 +8,14 @@ import { ApiPlayerService } from '../../services/api-player.service';
   selector: 'app-choose-name',
   imports: [FormsModule, CommonModule],
   templateUrl: './choose-name.component.html',
-  styleUrl: './choose-name.component.scss'
+  styleUrl: './choose-name.component.scss',
 })
 export class ChooseNameComponent implements OnDestroy {
-  @Output() passwordNeeded = new EventEmitter<{ playerName: string, isNewPlayer: boolean }>();
-  
+  @Output() passwordNeeded = new EventEmitter<{
+    playerName: string;
+    isNewPlayer: boolean;
+  }>();
+
   name: string = '';
   isCheckingName: boolean = false;
   nameStatus: 'available' | 'taken' | 'exists' | 'invalid' | 'idle' = 'idle';
@@ -28,7 +31,7 @@ export class ChooseNameComponent implements OnDestroy {
     }
 
     const trimmedName = this.name.trim();
-    
+
     if (!trimmedName) {
       this.nameStatus = 'idle';
       return;
@@ -41,18 +44,19 @@ export class ChooseNameComponent implements OnDestroy {
 
     this.isCheckingName = true;
     this.nameStatus = 'idle';
-    
+
     this.checkNameTimeout = setTimeout(async () => {
       await this.checkNameAvailability(trimmedName);
     }, 300);
   }
   private async checkNameAvailability(playerName: string) {
     try {
-      const response = await this.apiPlayerService.checkPlayerNameAvailability(playerName);
+      const response =
+        await this.apiPlayerService.checkPlayerNameAvailability(playerName);
       const data = await response.json();
-      
+
       this.isCheckingName = false;
-      
+
       if (response.ok) {
         if (data.currentlyConnected) {
           this.nameStatus = 'taken';
@@ -63,18 +67,22 @@ export class ChooseNameComponent implements OnDestroy {
         }
       } else {
         this.nameStatus = 'invalid';
-      }    
+      }
     } catch (error) {
       console.error('Erro ao verificar disponibilidade do nome:', error);
       this.isCheckingName = false;
       this.nameStatus = 'idle';
     }
-  }  
+  }
   async openGame() {
-    if (this.name.trim() && !this.loadingService.isLoading() && (this.nameStatus === 'available' || this.nameStatus === 'exists')) {
+    if (
+      this.name.trim() &&
+      !this.loadingService.isLoading() &&
+      (this.nameStatus === 'available' || this.nameStatus === 'exists')
+    ) {
       this.passwordNeeded.emit({
         playerName: this.name.trim(),
-        isNewPlayer: this.nameStatus === 'available'
+        isNewPlayer: this.nameStatus === 'available',
       });
     }
   }
@@ -84,11 +92,13 @@ export class ChooseNameComponent implements OnDestroy {
   }
 
   get canSubmit(): boolean {
-    return this.name.trim().length >= 2 && 
-           this.name.trim().length <= 20 && 
-           (this.nameStatus === 'available' || this.nameStatus === 'exists') && 
-           !this.isCheckingName && 
-           !this.isLoading;
+    return (
+      this.name.trim().length >= 2 &&
+      this.name.trim().length <= 20 &&
+      (this.nameStatus === 'available' || this.nameStatus === 'exists') &&
+      !this.isCheckingName &&
+      !this.isLoading
+    );
   }
 
   ngOnDestroy() {

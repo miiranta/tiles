@@ -7,12 +7,12 @@ import { LoadingService } from '../../services/loading.service';
   selector: 'app-loading',
   imports: [CommonModule],
   templateUrl: './loading.component.html',
-  styleUrl: './loading.component.scss'
+  styleUrl: './loading.component.scss',
 })
 export class LoadingComponent implements OnInit, OnDestroy {
   show: boolean = false;
   message: string = 'Carregando...';
-  
+
   private loadingSubscription: Subscription = new Subscription();
   private messageSubscription: Subscription = new Subscription();
 
@@ -20,11 +20,11 @@ export class LoadingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadingSubscription = this.loadingService.loading$.subscribe(
-      loading => this.show = loading
+      (loading) => (this.show = loading),
     );
-    
+
     this.messageSubscription = this.loadingService.message$.subscribe(
-      message => this.message = message
+      (message) => (this.message = message),
     );
   }
 

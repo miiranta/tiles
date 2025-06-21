@@ -11,13 +11,13 @@ import { PopupService } from '../../services/popup.service';
   selector: 'app-password',
   imports: [FormsModule, CommonModule],
   templateUrl: './password.component.html',
-  styleUrl: './password.component.scss'
+  styleUrl: './password.component.scss',
 })
 export class PasswordComponent {
   @Input() playerName: string = '';
   @Input() isNewPlayer: boolean = false;
   @Output() backToChooseName = new EventEmitter<void>();
-  
+
   password: string = '';
   confirmPassword: string = '';
   isLoading: boolean = false;
@@ -26,41 +26,40 @@ export class PasswordComponent {
     private playerService: PlayerService,
     private loadingService: LoadingService,
     private apiPlayerService: ApiPlayerService,
-    private popupService: PopupService
-  ) {
-    
-  }
+    private popupService: PopupService,
+  ) {}
   async handlePasswordSubmit() {
     if (!this.canSubmit()) {
       return;
     }
 
     this.isLoading = true;
-    
+
     try {
       if (this.isNewPlayer) {
         await this.createPlayerAccount();
       } else {
         await this.loginPlayer();
-      }    } catch (error) {
+      }
+    } catch (error) {
       console.error('Erro:', error);
-      this.popupService.error(
-        'Erro',
-        'Erro de conexão. Tente novamente.'
-      );
+      this.popupService.error('Erro', 'Erro de conexão. Tente novamente.');
       this.isLoading = false;
     }
   }
   private async createPlayerAccount() {
     this.loadingService.show('Criando conta...');
-    
-    const response = await this.apiPlayerService.createPlayerWithPassword(this.playerName, this.password);
+
+    const response = await this.apiPlayerService.createPlayerWithPassword(
+      this.playerName,
+      this.password,
+    );
     const data = await response.json();
-    
+
     if (response.ok && data.success) {
       this.playerService.setPlayerName(data.playerName);
       this.playerService.setJwtToken(data.token);
-      
+
       this.loadingService.setMessage('Entrando no jogo...');
       setTimeout(() => {
         this.router.navigate(['/tiles']);
@@ -70,20 +69,23 @@ export class PasswordComponent {
       this.isLoading = false;
       this.popupService.error(
         'Erro ao criar conta',
-        data.error || 'Falha ao criar conta'
+        data.error || 'Falha ao criar conta',
       );
     }
   }
   private async loginPlayer() {
     this.loadingService.show('Verificando senha...');
-    
-    const response = await this.apiPlayerService.authenticatePlayer(this.playerName, this.password);
+
+    const response = await this.apiPlayerService.authenticatePlayer(
+      this.playerName,
+      this.password,
+    );
     const data = await response.json();
-    
+
     if (response.ok && data.success) {
       this.playerService.setPlayerName(data.playerName);
       this.playerService.setJwtToken(data.token);
-      
+
       this.loadingService.setMessage('Entrando no jogo...');
       setTimeout(() => {
         this.router.navigate(['/tiles']);
@@ -93,7 +95,7 @@ export class PasswordComponent {
       this.isLoading = false;
       this.popupService.error(
         'Erro de autenticação',
-        data.error || 'Senha incorreta'
+        data.error || 'Senha incorreta',
       );
     }
   }
@@ -103,11 +105,13 @@ export class PasswordComponent {
 
   canSubmit(): boolean {
     if (this.isLoading) return false;
-    
+
     if (this.isNewPlayer) {
-      return this.password.length >= 4 && 
-             this.confirmPassword.length >= 4 && 
-             this.password === this.confirmPassword;
+      return (
+        this.password.length >= 4 &&
+        this.confirmPassword.length >= 4 &&
+        this.password === this.confirmPassword
+      );
     } else {
       return this.password.length >= 4;
     }
@@ -119,9 +123,10 @@ export class PasswordComponent {
   }
 
   get showPasswordMismatch(): boolean {
-    return this.isNewPlayer && 
-           this.confirmPassword.length > 0 && 
-           !this.passwordsMatch;
+    return (
+      this.isNewPlayer &&
+      this.confirmPassword.length > 0 &&
+      !this.passwordsMatch
+    );
   }
-
 }

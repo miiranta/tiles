@@ -8,16 +8,16 @@ import { PopupService, PopupData } from '../../services/popup.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './popup.component.html',
-  styleUrl: './popup.component.scss'
+  styleUrl: './popup.component.scss',
 })
 export class PopupComponent implements OnInit, OnDestroy {
   currentPopup: PopupData | null = null;
   private subscription: Subscription = new Subscription();
 
-  constructor(private popupService: PopupService) { }
+  constructor(private popupService: PopupService) {}
 
   ngOnInit(): void {
-    this.subscription = this.popupService.popup$.subscribe(popup => {
+    this.subscription = this.popupService.popup$.subscribe((popup) => {
       this.currentPopup = popup;
     });
   }
@@ -32,13 +32,18 @@ export class PopupComponent implements OnInit, OnDestroy {
 
   getIconClass(): string {
     if (!this.currentPopup) return '';
-    
+
     switch (this.currentPopup.type) {
-      case 'success': return 'icon-success';
-      case 'error': return 'icon-error';
-      case 'warning': return 'icon-warning';
-      case 'info': return 'icon-info';
-      default: return '';
+      case 'success':
+        return 'icon-success';
+      case 'error':
+        return 'icon-error';
+      case 'warning':
+        return 'icon-warning';
+      case 'info':
+        return 'icon-info';
+      default:
+        return '';
     }
   }
 }
