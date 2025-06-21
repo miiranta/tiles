@@ -1,17 +1,41 @@
 .name-container {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    135deg, 
+    #bdd8f8 0%, 
+    #7cacff 25%
+    );
+  background-size: 400% 400%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1000;
 }
 
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .name-form {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 30px;
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .name-form h1 {
@@ -69,4 +93,10 @@
   opacity: 0.5;
   cursor: not-allowed;
   border-color: rgba(255, 255, 255, 0.3);
+}
+
+.input-group button:disabled:hover {
+  background: transparent;
+  color: white;
+  box-shadow: none;
 }

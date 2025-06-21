@@ -3,7 +3,7 @@
     <h1>Olá! Qual é seu nome?</h1>
     <div class="input-group">
       <input type="text" [(ngModel)]="name" placeholder="Digite seu nome..." />
-      <button (click)="openGame()" [disabled]="!name.trim()">
+      <button (click)="openGame()" [disabled]="!name.trim() || isLoading">
         <span>Entrar</span>
       </button>
     </div>

@@ -5,6 +5,7 @@ import { ApiPlayerService } from '../../../../services/api-player.service';
 import { COLORS } from '../../enums/colors.model';
 import { PLACE_TILE_TIMEOUT } from '../../constants/game-config.consts';
 import { Game } from '../../classes/game.class';
+import { LoadingService } from '../../../../services/loading.service';
 
 @Component({
   selector: 'app-game-canvas',
@@ -21,6 +22,7 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
 
   apiMap: ApiMapService = inject(ApiMapService);
   apiPlayer: ApiPlayerService = inject(ApiPlayerService);
+  loadingService: LoadingService = inject(LoadingService);
 
   coords: any = { x: 0, y: 0 };
   fps: number = 0;
@@ -47,6 +49,11 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
           this.coordsChanged.emit(this.coords);
           this.fpsChanged.emit(this.fps);
         }, 1000 / 10);
+
+        this.loadingService.show('Iniciando o jogo...');
+        setTimeout(() => {
+            this.loadingService.hide();
+        }, 2000);
     }
   }
 
