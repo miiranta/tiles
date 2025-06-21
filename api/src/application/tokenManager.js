@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const { log } = require('./colorLogging');
+const { log } = require('../utils/colorLogging');
 
-class TokenHandler {
+class TokenManager {
     constructor() {
         this.connectedPlayers = new Map(); // playerName -> { token, connectedAt }
     }
@@ -29,7 +29,7 @@ class TokenHandler {
                 connectedAt: new Date()
             });
 
-            log.success('tokenHandler', `Token generated for player: ${playerName}`);
+            log.success('tokenManager', `Token generated for player: ${playerName}`);
 
             return {
                 success: true,
@@ -38,7 +38,7 @@ class TokenHandler {
             };
 
         } catch (error) {
-            log.error('tokenHandler', `Error generating token: ${error.message}`);
+            log.error('tokenManager', `Error generating token: ${error.message}`);
             return {
                 success: false,
                 message: 'Failed to generate token'
@@ -61,7 +61,7 @@ class TokenHandler {
             };
 
         } catch (error) {
-            log.error('tokenHandler', `Token verification failed: ${error.message}`);
+            log.error('tokenManager', `Token verification failed: ${error.message}`);
             return { valid: false, message: 'Invalid token' };
         }
     }    
@@ -71,14 +71,14 @@ class TokenHandler {
             if (this.connectedPlayers.has(playerName)) {
                 this.connectedPlayers.delete(playerName);
                 
-                log.info('tokenHandler', `Token revoked for player: ${playerName}`);
+                log.info('tokenManager', `Token revoked for player: ${playerName}`);
                 return playerName;
             }
 
             return null;
 
         } catch (error) {
-            log.error('tokenHandler', `Error revoking token: ${error.message}`);
+            log.error('tokenManager', `Error revoking token: ${error.message}`);
             return null;
         }
     }
@@ -92,4 +92,4 @@ class TokenHandler {
     }
 }
 
-module.exports = new TokenHandler();
+module.exports = { TokenManager };

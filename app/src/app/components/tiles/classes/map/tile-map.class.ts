@@ -58,13 +58,11 @@ export class TileMap {
 
     // Check if the tile type is the same
     if (this.map.get(key)?.type === type) return;
-    
-    // Get JWT token from player service
+      // Get JWT token from player service
     const token = this.playerService.getJwtToken();
     if (!token) return;
     
     this.apiPlayer.sendMapPlace(token, x, y, type);
-    this.apiMap.putMapTile(x, y, type);
   }
 
   placeTileLocal(x: number, y: number, type: string) {

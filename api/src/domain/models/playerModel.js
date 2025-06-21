@@ -63,5 +63,6 @@ playerSchema.methods.updateTilesPlaced = function(tileType) {
 const Player = mongoose.model('Player', playerSchema);
 
 module.exports = {
-  Player
+  Player,
+  playerSchema
 };

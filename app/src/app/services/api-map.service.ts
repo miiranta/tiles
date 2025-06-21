@@ -11,22 +11,13 @@ export class ApiMapService {
   constructor() { }
 
   // REST API methods for map operations
-  async getMapTiles(x: number, y: number, render: number){
-    return await fetch(`${BASE_URL}/map/${x}/${y}/${render}`, {
+  async getMapTiles(x: number, y: number, range: number){
+    return await fetch(`${BASE_URL}/map/${x}/${y}/${range}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
-    })
-  }
-  async putMapTile(x: number, y: number, type: string){
-    return await fetch(`${BASE_URL}/map/${x}/${y}/${type}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
     })
   }
 }

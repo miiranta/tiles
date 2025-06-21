@@ -1,18 +1,5 @@
 const mongoose = require('mongoose');
-
-const COLORS = [
-  'white',
-  'lightgray',
-  'gray',
-  'darkgray',
-  'black',
-  'red',
-  'green',
-  'blue',
-  'yellow',
-  'purple',
-  'orange'
-];
+const { COLORS } = require('../enums/colors');
 
 const tileSchema = new mongoose.Schema({
   x: {
@@ -60,7 +47,7 @@ tileSchema.methods.setDefaultType = function() {
 
 const Tile = mongoose.model('Tile', tileSchema);
 
-module.exports = {
-  Tile,
-  COLORS
+module.exports = { 
+  Tile, 
+  tileSchema 
 };

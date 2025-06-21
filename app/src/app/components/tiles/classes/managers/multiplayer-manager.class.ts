@@ -10,12 +10,13 @@ export class MultiplayerManager {
   constructor() { 
     // Do nothing here
   }
-
+  
   setGameTarget(game: Game) {
     this.game = game;
 
     this.listenPlayerUpdates();
     this.listenPlayerRemove();
+    this.listenMapPlace();
   }
     // Player position updates
   sendPlayerUpdate() {

@@ -12,7 +12,9 @@ class Database {
       
       if (!connectionString) {
         throw new Error('MONGODB_CONNECTION_STRING is not defined in environment variables');
-      }      this.connection = await mongoose.connect(connectionString);
+      }
+      
+      this.connection = await mongoose.connect(connectionString);
 
       log.success('database', 'Connected to MongoDB successfully');
       
@@ -27,16 +29,19 @@ class Database {
       return this.connection;
     } catch (error) {
       log.error('database', `Failed to connect to MongoDB: ${error.message}`);
-      process.exit(1);
+      throw error;
     }
   }
 
   async disconnect() {
     try {
-      await mongoose.disconnect();
-      log.info('database', 'Disconnected from MongoDB');
+      if (this.connection) {
+        await mongoose.connection.close();
+        log.info('database', 'Database connection closed successfully');
+      }
     } catch (error) {
-      log.error('database', `Error disconnecting from MongoDB: ${error.message}`);
+      log.error('database', `Error closing database connection: ${error.message}`);
+      throw error;
     }
   }
 
@@ -45,4 +50,4 @@ class Database {
   }
 }
 
-module.exports = new Database();
+module.exports = { Database };
