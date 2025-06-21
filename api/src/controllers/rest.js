@@ -106,7 +106,38 @@ const setupRestEndpoints = (router) => {
                 res.status(500).json({ error: 'Failed to place tile' });
             }        } catch (error) {
             log.error('rest', `Error placing tile: ${error.message}`);
-            res.status(500).json({ error: 'Internal server error' });
+            res.status(500).json({ error: 'Internal server error' });        
+        }
+    });
+
+    // GET /player/:playerName - Check if player name is available
+    router.get('/player/:playerName', (req, res) => {
+        try {
+            const { playerName } = req.params;
+
+            if (!playerName || playerName.trim().length === 0) {
+                return res.status(400).json({ error: 'Player name is required' });
+            }
+
+            const trimmedName = playerName.trim();
+            
+            if (trimmedName.length < 2 || trimmedName.length > 20) {
+                return res.status(400).json({ 
+                    error: 'Player name must be between 2 and 20 characters',
+                    taken: true 
+                });
+            }
+
+            const isTaken = !tokenHandler.isNameAvailable(trimmedName);
+            
+            res.status(200).json({ 
+                taken: isTaken,
+                available: !isTaken 
+            });
+
+        } catch (error) {
+            log.error('rest', `Error checking player name availability: ${error.message}`);
+            res.status(500).json({ error: 'Internal server error', taken: true });
         }
     });
 

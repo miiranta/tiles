@@ -33,7 +33,6 @@ export class ApiPlayerService {
       };
     });
   }
-
   async createPlayer(playerName: string): Promise<any> {
     return await fetch(`${BASE_URL}/player`, {
       method: 'POST',
@@ -45,6 +44,15 @@ export class ApiPlayerService {
         playerName,
         socketId: this.socket.id
       })
+    });
+  }
+
+  async checkPlayerNameAvailability(playerName: string): Promise<any> {
+    return await fetch(`${BASE_URL}/player/${encodeURIComponent(playerName)}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
     });
   }
 

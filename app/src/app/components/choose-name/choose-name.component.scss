@@ -48,7 +48,14 @@
 .input-group {
   display: flex;
   gap: 10px;
-  align-items: center;
+  align-items: flex-start;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
 }
 
 .input-group input {
@@ -59,7 +66,7 @@
   color: #333;
   font-size: 16px;
   outline: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.3s ease, background-color 0.2s ease;
   min-width: 200px;
 }
 
@@ -68,8 +75,58 @@
   background: rgba(255, 255, 255, 1);
 }
 
+.input-group input.available {
+  border-color: #4CAF50;
+  background: rgba(255, 255, 255, 1);
+}
+
+.input-group input.taken {
+  border-color: #f44336;
+  background: rgba(255, 255, 255, 1);
+}
+
+.input-group input.invalid {
+  border-color: #FF9800;
+  background: rgba(255, 255, 255, 1);
+}
+
+.input-group input.checking {
+  border-color: #2196F3;
+  background: rgba(255, 255, 255, 1);
+}
+
 .input-group input::placeholder {
   color: #666;
+}
+
+.name-status {
+  font-size: 16px;
+  margin-top: 4px;
+  padding-left: 2px;
+  height: 16px;
+  width: 100%;
+  max-width: 230px;
+  text-align: left;
+}
+
+.name-status .available {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.name-status .taken {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.name-status .invalid {
+  color: #FF9800;
+  font-weight: 500;
+}
+
+.name-status .checking {
+  color: #2196F3;
+  font-weight: 500;
 }
 
 .input-group button {
