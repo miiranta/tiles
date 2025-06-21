@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { TilesComponent } from '../../components/tiles/tiles.component';
 import { PlayerService } from '../../services/player.service';
 

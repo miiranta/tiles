@@ -1,11 +1,8 @@
 import { Component, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { PlayerService } from '../../services/player.service';
 import { LoadingService } from '../../services/loading.service';
 import { ApiPlayerService } from '../../services/api-player.service';
-import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-choose-name',
@@ -22,11 +19,8 @@ export class ChooseNameComponent implements OnDestroy {
   private checkNameTimeout: any = null;
 
   constructor(
-    private router: Router, 
-    private playerService: PlayerService,
     private loadingService: LoadingService,
     private apiPlayerService: ApiPlayerService,
-    private popupService: PopupService
   ) {}
 
   onNameInput() {

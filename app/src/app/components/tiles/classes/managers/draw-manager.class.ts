@@ -15,7 +15,7 @@ export class DrawManager {
   fps: number = 0;
 
   constructor() {
-    // Do nothing here, please
+    // Do nothing here
   }
 
   setGameTarget(game: Game) {
@@ -25,7 +25,7 @@ export class DrawManager {
 
   setScalingFactor(scrollIndex: number) {
     const maxScalingFactor = 2;
-    const minScalingFactor = 0.06;
+    const minScalingFactor = 0.15;
 
     //Speed down
     this.scale_speed *= 0.9;
@@ -105,7 +105,6 @@ export class DrawManager {
       this.ctx.strokeRect(0, 0, TILE_SIZE, TILE_SIZE);
 
     }
-
   }
 
   drawOtherPlayers() {

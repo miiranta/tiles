@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { COLORS } from './enums/colors.model';
 import { GameStatsComponent } from './components/game-stats/game-stats.component';
 import { GameCanvasComponent } from './components/game-canvas/game-canvas.component';
