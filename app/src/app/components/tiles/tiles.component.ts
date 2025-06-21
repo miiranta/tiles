@@ -13,7 +13,7 @@ import { ColorSelectorComponent } from './components/color-selector/color-select
   styleUrl: './tiles.component.scss'
 })
 export class TilesComponent {
-  @Input() playerId: string = "";
+  @Input() playerName: string = "";
 
   coords: any = { x: 0, y: 0 };
   fps: number = 0;

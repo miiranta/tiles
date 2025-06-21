@@ -20,23 +20,23 @@ export class MultiplayerManager {
   // Player position
   sendPlayerPosition() {
     const player_coords = this.game.player.getPositionFloat();
-    this.game.api.sendPlayerPosition(this.game.player.playerId, player_coords.x, player_coords.y);
+    this.game.api.sendPlayerPosition(this.game.player.playerName, player_coords.x, player_coords.y);
   }
 
   listenPlayerPositions() {
     this.game.api.on('playerPosition').subscribe((data: any) => {
       // Test if the player is already in the map
-      if (this.all_players.has(data.playerId)) {
-        var player = this.all_players.get(data.playerId)!;
+      if (this.all_players.has(data.playerName)) {
+        var player = this.all_players.get(data.playerName)!;
         player.x = data.x;
         player.y = data.y;
         player.last_update = Date.now();
       } else {
-        const newPlayer = new Player(data.playerId);
+        const newPlayer = new Player(data.playerName);
         newPlayer.x = data.x;
         newPlayer.y = data.y;
         newPlayer.last_update = Date.now();
-        this.all_players.set(data.playerId, newPlayer);
+        this.all_players.set(data.playerName, newPlayer);
       }
     });
   }
@@ -45,9 +45,9 @@ export class MultiplayerManager {
     const now = Date.now();
     const timeout = 1000; // 1 seconds
 
-    this.all_players.forEach((player, playerId) => {
+    this.all_players.forEach((player, playerName) => {
       if (now - player.last_update > timeout) {
-        this.all_players.delete(playerId);
+        this.all_players.delete(playerName);
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, inject, Input, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, inject, Input, ViewChild, Output, EventEmitter, OnDestroy, OnInit, OnChanges } from '@angular/core';
 
 import { ApiFetchService } from '../../../../services/api-fetch.service';
 import { COLORS } from '../../enums/colors.model';
@@ -11,9 +11,9 @@ import { Game } from '../../classes/game.class';
   templateUrl: './game-canvas.component.html',
   styleUrl: './game-canvas.component.scss'
 })
-export class GameCanvasComponent implements OnDestroy {
+export class GameCanvasComponent implements OnChanges, OnDestroy {
   @ViewChild('gameCanvas') gameCanvas: any;
-  @Input() playerId: string = "";
+  @Input() playerName: string = "";
   @Input() selectedColor: string = COLORS[0];
   @Output() coordsChanged = new EventEmitter<any>();
   @Output() fpsChanged = new EventEmitter<number>();
@@ -25,19 +25,33 @@ export class GameCanvasComponent implements OnDestroy {
   game?: Game = undefined;
   placeTileTimeout: any = null;
   statsInterval: any = null;
+  gameInitialized: boolean = false;
   
   ngAfterViewInit() {
-    this.game = new Game(this.gameCanvas, this.api, this.playerId);
+    this.initializeGame();
+  }
 
-    this.canvasSetSize();
-    window.addEventListener('resize', this.canvasSetSize.bind(this));
+  private initializeGame() {
+    if (this.playerName && this.playerName.trim() && this.gameCanvas && !this.gameInitialized) {
+      this.game = new Game(this.gameCanvas, this.api, this.playerName);
+      this.gameInitialized = true;
 
-    this.statsInterval = setInterval(() => {
-        this.coords = this.game?.player.getPosition();
-        this.fps = Math.round(this.game?.drawManager.fps ?? 0);
-        this.coordsChanged.emit(this.coords);
-        this.fpsChanged.emit(this.fps);
-      }, 1000 / 10);
+      this.canvasSetSize();
+      window.addEventListener('resize', this.canvasSetSize.bind(this));
+
+      this.statsInterval = setInterval(() => {
+          this.coords = this.game?.player.getPosition();
+          this.fps = Math.round(this.game?.drawManager.fps ?? 0);
+          this.coordsChanged.emit(this.coords);
+          this.fpsChanged.emit(this.fps);
+        }, 1000 / 10);
+    }
+  }
+
+  ngOnChanges() {
+    if (!this.gameInitialized && this.playerName && this.playerName.trim()) {
+      this.initializeGame();
+    }
   }
 
   ngOnDestroy() {

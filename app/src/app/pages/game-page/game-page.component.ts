@@ -11,13 +11,13 @@ import { PlayerService } from '../../services/player.service';
   styleUrl: './game-page.component.scss'
 })
 export class GamePageComponent implements OnInit {
-  playerId: string = '';
+  playerName: string = '';
 
   constructor(private playerService: PlayerService, private router: Router) {}
 
   ngOnInit() {
-    this.playerId = this.playerService.getPlayerName();
-    if (!this.playerId) {
+    this.playerName = this.playerService.getPlayerName();
+    if (!this.playerName) {
       this.router.navigate(['/']);
     }
   }

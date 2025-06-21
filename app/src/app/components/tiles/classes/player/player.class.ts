@@ -5,12 +5,12 @@ export class Player {
   private y_speed: number = 0;
   public x: number = 0;
   public y: number = 0;
-  public playerId: string;
+  public playerName: string;
   public last_update: number = 0;
   public randomRgbColor: string = '';
 
-  constructor(playerId: string) {
-    this.playerId = playerId;
+  constructor(playerName: string) {
+    this.playerName = playerName;
     this.randomRgbColor = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
   }
 

@@ -111,7 +111,7 @@ export class DrawManager {
   drawOtherPlayers() {
     if (this.ctx) {
       this.game.multiplayerManager.all_players.forEach((player: Player) => {
-        if(player.playerId == this.game.player.playerId) return;
+        if(player.playerName == this.game.player.playerName) return;
 
         const player_coords = player.getPositionFloat();
         const relative_x = player_coords.x - this.game.player.getPositionFloat().x;
@@ -125,7 +125,7 @@ export class DrawManager {
         this.ctx.fillStyle = "black";
         this.ctx.textAlign = 'center';
         this.ctx.font = '20px Arial';
-        this.ctx.fillText(player.playerId, relative_x * TILE_SIZE + TILE_SIZE / 2, relative_y * TILE_SIZE - TILE_SIZE/8);
+        this.ctx.fillText(player.playerName, relative_x * TILE_SIZE + TILE_SIZE / 2, relative_y * TILE_SIZE - TILE_SIZE/8);
       });
     }
   }

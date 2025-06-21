@@ -1,11 +1,11 @@
 <app-game-stats 
   [coords]="coords" 
   [fps]="fps" 
-  [playerId]="playerId">
+  [playerName]="playerName">
 </app-game-stats>
 
 <app-game-canvas 
-  [playerId]="playerId" 
+  [playerName]="playerName" 
   [selectedColor]="selected_color"
   (coordsChanged)="onCoordsChanged($event)"
   (fpsChanged)="onFpsChanged($event)">

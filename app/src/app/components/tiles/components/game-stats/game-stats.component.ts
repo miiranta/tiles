@@ -9,5 +9,5 @@ import { Component, Input } from '@angular/core';
 export class GameStatsComponent {
   @Input() coords: any = { x: 0, y: 0 };
   @Input() fps: number = 0;
-  @Input() playerId: string = '';
+  @Input() playerName: string = '';
 }
