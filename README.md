@@ -24,18 +24,8 @@ PORT = 3000;
 - Then run the following commands in the terminal:
 
 ```bash
-// Setup (Angular App)
-cd app
-npm i
-ng build
-
-cd ..
-
-// Setup (Express API)
 cd api
-npm i
-
-// Run
+npm run setup 
 npm start
 ```
 

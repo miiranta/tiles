@@ -39,8 +39,7 @@ class PlayerManager {
       if (!player.validatePassword(password)) {
         return { success: false, message: "Senha inválida" };
       }
-
-      player.lastLogin = new Date();
+      
       await player.save();
 
       const token = this.tokenManager.generateToken(playerName);

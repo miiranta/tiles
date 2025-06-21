@@ -64,7 +64,7 @@ export class TileMap {
     const token = this.playerService.getJwtToken();
     if (!token) return;
 
-    this.apiPlayer.sendMapPlace(token, x, y, type);
+    this.apiMap.sendMapPlace(token, x, y, type);
   }
 
   placeTileLocal(x: number, y: number, type: string) {

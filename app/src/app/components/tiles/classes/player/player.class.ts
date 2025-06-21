@@ -15,18 +15,21 @@ export class Player implements IPlayer {
     this.playerName = playerName;
     this.randomRgbColor = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
   }
+
   getPosition(): Position {
     const x_int = Math.round(this.x);
     const y_int = Math.round(this.y);
 
     return { x: x_int, y: y_int };
   }
+
   getPositionFloat(): Position {
     return { x: this.x, y: this.y };
   }
+
   updateSpeed(keyMap: Map<string, boolean>) {
-    this.x_speed *= 0.85;
-    this.y_speed *= 0.85;
+    this.x_speed *= 0.75;
+    this.y_speed *= 0.75;
     if (Math.abs(this.x_speed) < 0.1) {
       this.x_speed = 0;
     }

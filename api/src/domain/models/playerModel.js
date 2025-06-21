@@ -15,10 +15,6 @@ const playerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    lastLogin: {
-      type: Date,
-      default: Date.now,
-    },
     stats: {
       distanceTraveled: {
         type: Number,

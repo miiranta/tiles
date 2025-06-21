@@ -55,8 +55,6 @@ class StatsManager {
         playerName: player.playerName,
         distanceTraveled: player.stats.distanceTraveled || 0,
         tilesPlaced: Object.fromEntries(player.stats.tilesPlaced || new Map()),
-        lastLogin: player.lastLogin,
-        createdAt: player.createdAt,
       };
     } catch (error) {
       log.error(

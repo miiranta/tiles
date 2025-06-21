@@ -12,7 +12,7 @@
     (touchmove)="$event.stopPropagation()"
   >
     <div class="modal-header">
-      <h3>Player Statistics</h3>
+      <h3>Estatísticas do jogador</h3>
       <button class="close-btn" (click)="onClose()">&times;</button>
     </div>
 
@@ -32,9 +32,9 @@
         </div>
 
         <div class="stats-section">
-          <h5>Movement</h5>
+          <h5>Movimento</h5>
           <div class="stat-item">
-            <span class="stat-label">Distance Traveled:</span>
+            <span class="stat-label">Distância total viajada:</span>
             <span class="stat-value"
               >{{ formatDistance(playerStats.distanceTraveled) }} units</span
             >
@@ -42,9 +42,9 @@
         </div>
 
         <div class="stats-section">
-          <h5>Tiles Placed</h5>
+          <h5>Ladrilhos colocados</h5>
           <div class="stat-item total">
-            <span class="stat-label">Total Tiles:</span>
+            <span class="stat-label">Total de ladrilhos:</span>
             <span class="stat-value">{{ getTotalTilesPlaced() }}</span>
           </div>
 
@@ -62,7 +62,7 @@
           </div>
 
           <div *ngIf="getTileTypes().length === 0" class="no-tiles">
-            <p>No tiles placed yet</p>
+            <p>Nenhum ladrilho foi colocado ainda</p>
           </div>
         </div>
       </div>

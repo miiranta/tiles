@@ -25,7 +25,7 @@ export class DrawManager {
   }
   setScalingFactor(scrollIndex: number) {
     const maxScalingFactor = 2;
-    const minScalingFactor = 0.15;
+    const minScalingFactor = 0.2;
 
     this.scale_speed *= 0.9;
     if (Math.abs(this.scale_speed) < 0.001) {

@@ -19,14 +19,6 @@ const tileSchema = new mongoose.Schema(
       enum: COLORS,
       default: "white",
     },
-    lastModified: {
-      type: Date,
-      default: Date.now,
-    },
-    modifiedBy: {
-      type: String,
-      default: "system",
-    },
   },
   {
     timestamps: true,

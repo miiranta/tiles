@@ -72,9 +72,7 @@ class MapManager {
       const tile = await Tile.findOneAndUpdate(
         { x, y },
         {
-          type,
-          lastModified: new Date(),
-          modifiedBy: playerName,
+          type
         },
         {
           upsert: true,

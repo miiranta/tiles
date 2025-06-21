@@ -11,7 +11,7 @@ const dotenvPath = path.join(__dirname, "../environments", ".env");
 require("dotenv").config({ path: dotenvPath });
 
 const PORT = process.env.PORT || 3000;
-const ANGULAR_FOLDER = path.join(__dirname, "../app/dist/tiles/browser");
+const ANGULAR_FOLDER = path.join(__dirname, "../../app/dist/tiles/browser");
 
 const startServer = async () => {
   try {
@@ -37,7 +37,8 @@ const startServer = async () => {
 
     new AppManager(app, io, database);
 
-    app.get("/", (req, res) => {
+    //GET /: Envia o frontend ao cliente
+    app.get("*", (req, res) => {
       res.sendFile(path.join(ANGULAR_FOLDER, "/index.html"));
     });
 
