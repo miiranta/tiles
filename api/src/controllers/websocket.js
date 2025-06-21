@@ -44,8 +44,8 @@ const setupWebsocketsStreams = (io) => {
                 if (!tokenInfo) {
                     socket.emit('auth-error', { message: 'Invalid or expired token' });
                     return;
-                }
-
+                }                
+                
                 // Calculate distance traveled if we have a previous position
                 if (lastPlayerPosition.x !== 0 || lastPlayerPosition.y !== 0) {
                     const distance = Math.sqrt(
@@ -53,29 +53,31 @@ const setupWebsocketsStreams = (io) => {
                         Math.pow(y - lastPlayerPosition.y, 2)
                     );
                     
-                    // Update player stats in database (only if distance is reasonable)
+                    // Update player stats in database asynchronously (non-blocking)
                     if (distance > 0 && distance < 1000) { // Prevent 'teleportation'
-                        try {
-                            const player = await Player.findByName(tokenInfo.playerName);
-                            if (player) {
-                                await player.updateDistanceTraveled(distance);
+                        setImmediate(async () => {
+                            try {
+                                const player = await Player.findByName(tokenInfo.playerName);
+                                if (player) {
+                                    await player.updateDistanceTraveled(distance);
+                                }
+                            } catch (dbError) {
+                                log.error('websocket', `Error updating distance for ${tokenInfo.playerName}: ${dbError.message}`);
                             }
-                        } catch (dbError) {
-                            log.error('websocket', `Error updating distance for ${tokenInfo.playerName}: ${dbError.message}`);
-                        }
+                        });
                     }
                 }
                 
                 // Update last position
                 lastPlayerPosition = { x, y };
 
-                // Broadcast to all other clients (not sender)
+                // Broadcast to all other clients (not sender) IMMEDIATELY
                 socket.broadcast.emit('player-update', { 
                     playerName: tokenInfo.playerName,
                     x, 
                     y 
-                });     
-                       
+                });
+
             } catch (error) {
                 log.error('websocket', `Error handling player update: ${error.message}`);
             }
@@ -95,24 +97,26 @@ const setupWebsocketsStreams = (io) => {
                 if (!tokenInfo) {
                     socket.emit('auth-error', { message: 'Invalid or expired token' });
                     return;
-                }
-
+                }                
+                
                 const success = await gameServer.placeTile(x, y, type, tokenInfo.playerName);
                 
                 if (success) {
-                    // Update player tile placement stats
-                    try {
-                        const player = await Player.findByName(tokenInfo.playerName);
-                        if (player) {
-                            await player.updateTilesPlaced(type);
-                        }
-                    } catch (dbError) {
-                        log.error('websocket', `Error updating tile stats for ${tokenInfo.playerName}: ${dbError.message}`);
-                    }
-
-                    // Broadcast to all clients including sender
+                    // Broadcast to all clients including sender IMMEDIATELY
                     io.emit('map-place', { x, y, type, playerName: tokenInfo.playerName });
                     log.info('websocket', `Tile placed at (${x}, ${y}) with color ${type} by ${tokenInfo.playerName}`);
+                    
+                    // Update player tile placement stats asynchronously (non-blocking)
+                    setImmediate(async () => {
+                        try {
+                            const player = await Player.findByName(tokenInfo.playerName);
+                            if (player) {
+                                await player.updateTilesPlaced(type);
+                            }
+                        } catch (dbError) {
+                            log.error('websocket', `Error updating tile stats for ${tokenInfo.playerName}: ${dbError.message}`);
+                        }
+                    });
                 }
             } catch (error) {
                 log.error('websocket', `Error placing tile: ${error.message}`);

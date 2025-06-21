@@ -18,7 +18,7 @@ export class PlayerStatsComponent implements OnInit, OnChanges {
   playerStats: PlayerStats | null = null;
   isLoading: boolean = false;
   error: string | null = null;
-  
+
   constructor(
     private apiStatsService: ApiStatsService,
   ) {}
@@ -51,7 +51,7 @@ export class PlayerStatsComponent implements OnInit, OnChanges {
         setTimeout(() => {
             this.playerStats = stats;
             this.isLoading = false;
-        }, 1000);
+        }, 300);
       }
     ).catch(
       (error) => {
