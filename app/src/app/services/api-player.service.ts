@@ -46,13 +46,43 @@ export class ApiPlayerService {
       })
     });
   }
-
+  
   async checkPlayerNameAvailability(playerName: string): Promise<any> {
     return await fetch(`${BASE_URL}/player/${encodeURIComponent(playerName)}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       }
+    });
+  }
+
+  async createPlayerWithPassword(playerName: string, password: string): Promise<any> {
+    return await fetch(`${BASE_URL}/player`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        playerName,
+        password,
+        socketId: this.socket.id
+      })
+    });
+  }
+
+  async authenticatePlayer(playerName: string, password: string): Promise<any> {
+    return await fetch(`${BASE_URL}/player/authenticate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        playerName,
+        password,
+        socketId: this.socket.id
+      })
     });
   }
 

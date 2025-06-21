@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -14,9 +14,11 @@ import { PopupService } from '../../services/popup.service';
   styleUrl: './choose-name.component.scss'
 })
 export class ChooseNameComponent implements OnDestroy {
+  @Output() passwordNeeded = new EventEmitter<{ playerName: string, isNewPlayer: boolean }>();
+  
   name: string = '';
   isCheckingName: boolean = false;
-  nameStatus: 'available' | 'taken' | 'invalid' | 'idle' = 'idle';
+  nameStatus: 'available' | 'taken' | 'exists' | 'invalid' | 'idle' = 'idle';
   private checkNameTimeout: any = null;
 
   constructor(
@@ -55,7 +57,6 @@ export class ChooseNameComponent implements OnDestroy {
       await this.checkNameAvailability(trimmedName);
     }, 300);
   }
-
   private async checkNameAvailability(playerName: string) {
     try {
       const response = await this.apiPlayerService.checkPlayerNameAvailability(playerName);
@@ -64,7 +65,13 @@ export class ChooseNameComponent implements OnDestroy {
       this.isCheckingName = false;
       
       if (response.ok) {
-        this.nameStatus = data.taken ? 'taken' : 'available';
+        if (data.currentlyConnected) {
+          this.nameStatus = 'taken';
+        } else if (data.existsInDatabase) {
+          this.nameStatus = 'exists';
+        } else {
+          this.nameStatus = 'available';
+        }
       } else {
         this.nameStatus = 'invalid';
       }
@@ -73,39 +80,14 @@ export class ChooseNameComponent implements OnDestroy {
       this.isCheckingName = false;
       this.nameStatus = 'idle'; // Reset to idle on error
     }
-  }
-  async openGame() {
-    if (this.name.trim() && !this.loadingService.isLoading() && this.nameStatus === 'available') {
-      this.loadingService.show('Criando jogador...');
-      
-      try {
-        const response = await this.apiPlayerService.createPlayer(this.name.trim());
-        const data = await response.json();
-        if (response.ok && data.success) {
-          // Store player data
-          this.playerService.setPlayerName(data.playerName);
-          this.playerService.setJwtToken(data.token);
-          
-          this.loadingService.setMessage('Entrando no jogo...');
-          setTimeout(() => {
-            this.loadingService.hide();
-            this.router.navigate(['/tiles']);
-          }, 1000);
-        } else {
-          this.loadingService.hide();
-          this.popupService.error(
-            'Erro ao criar jogador', 
-            data.error || 'Falha ao criar jogador'
-          );
-        }
-      } catch (error) {
-        this.loadingService.hide();
-        this.popupService.error(
-          'Erro de conexão', 
-          'Erro de rede. Tente novamente.'
-        );
-        console.error('Error creating player:', error);
-      }
+  }  
+    async openGame() {
+    if (this.name.trim() && !this.loadingService.isLoading() && (this.nameStatus === 'available' || this.nameStatus === 'exists')) {
+      // Emit event to parent component
+      this.passwordNeeded.emit({
+        playerName: this.name.trim(),
+        isNewPlayer: this.nameStatus === 'available'
+      });
     }
   }
 
@@ -116,7 +98,7 @@ export class ChooseNameComponent implements OnDestroy {
   get canSubmit(): boolean {
     return this.name.trim().length >= 2 && 
            this.name.trim().length <= 20 && 
-           this.nameStatus === 'available' && 
+           (this.nameStatus === 'available' || this.nameStatus === 'exists') && 
            !this.isCheckingName && 
            !this.isLoading;
   }
