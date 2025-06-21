@@ -1,0 +1,72 @@
+.name-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.name-form {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.name-form h1 {
+  color: white;
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-group input {
+  padding: 12px 16px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  min-width: 200px;
+}
+
+.input-group input:focus {
+  border-color: white;
+  background: rgba(255, 255, 255, 1);
+}
+
+.input-group input::placeholder {
+  color: #666;
+}
+
+.input-group button {
+  padding: 12px 20px;
+  border: 2px solid white;
+  border-radius: 4px;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.input-group button:hover:not(:disabled) {
+  background: white;
+  color: #333;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.input-group button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.3);
+}

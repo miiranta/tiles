@@ -1,9 +1,11 @@
-<div class="row">
-  <div class="col">
-    <div>
-      <h1>Olá! Qual é seu nome?</h1>
-      <input type="text" [(ngModel)]="name" placeholder="..." />
-      <button (click)="openGame()">></button>
+<div class="name-container">
+  <div class="name-form">
+    <h1>Olá! Qual é seu nome?</h1>
+    <div class="input-group">
+      <input type="text" [(ngModel)]="name" placeholder="Digite seu nome..." />
+      <button (click)="openGame()" [disabled]="!name.trim()">
+        <span>Entrar</span>
+      </button>
     </div>
   </div>
 </div>
