@@ -23,7 +23,7 @@ export class Game {
     apiMap: any,
     apiPlayer: any,
     playerService: any,
-    playerName: string,
+    playerName: string
   ) {
     this.playerName = playerName;
     if (this.playerName == '' || this.playerName == undefined) {
@@ -35,8 +35,17 @@ export class Game {
     if (!this.canvas) {
       return;
     }
+
     this.apiMap = apiMap;
+    if (!this.apiMap) {
+      return;
+    }
+
     this.apiPlayer = apiPlayer;
+    if (!this.apiPlayer) {
+      return;
+    }
+
     this.playerService = playerService;
     if (!this.apiMap || !this.apiPlayer) {
       return;
@@ -51,6 +60,7 @@ export class Game {
     if (!this.player) {
       return;
     }
+
     this.drawManager.setGameTarget(this);
     this.multiplayerManager.setGameTarget(this);
 

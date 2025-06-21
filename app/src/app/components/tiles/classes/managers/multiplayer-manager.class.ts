@@ -44,12 +44,13 @@ export class MultiplayerManager {
       this.game.apiPlayer.sendPlayerUpdate(
         token,
         player_coords.x,
-        player_coords.y,
+        player_coords.y
       );
       this.lastSentPosition = { x: player_coords.x, y: player_coords.y };
       this.lastSentTime = currentTime;
     }
   }
+
   updatePlayerPositions() {
     const currentTime = Date.now();
     this.all_players.forEach((player) => {
@@ -69,8 +70,9 @@ export class MultiplayerManager {
       }
     });
   }
+
   listenPlayerUpdates() {
-    this.game.apiPlayer.on('player-update').subscribe((data: any) => {
+    this.game.apiPlayer.onPlayerUpdate().subscribe((data: any) => {
       if (data.playerName === this.game.player.playerName) {
         return;
       }
@@ -103,14 +105,17 @@ export class MultiplayerManager {
           moveStartTime: Date.now(),
           moveDuration: PLAYER_MOVE_DURATION,
           last_update: Date.now(),
-          randomRgbColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`,
+          randomRgbColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
+            Math.random() * 256
+          )}, ${Math.floor(Math.random() * 256)})`,
         };
         this.all_players.set(data.playerName, newPlayer);
       }
     });
   }
+
   listenPlayerRemove() {
-    this.game.apiPlayer.on('player-remove').subscribe((data: any) => {
+    this.game.apiPlayer.onPlayerRemove().subscribe((data: any) => {
       if (data.playerName && this.all_players.has(data.playerName)) {
         this.all_players.delete(data.playerName);
         console.log(`Jogador ${data.playerName} desconectado`);
@@ -119,7 +124,7 @@ export class MultiplayerManager {
   }
 
   listenMapPlace() {
-    this.game.apiPlayer.on('map-place').subscribe((data: any) => {
+    this.game.apiMap.onMapPlace().subscribe((data: any) => {
       const tile = new Tile(data.x, data.y, data.type);
       this.game.map.placeTileLocal(tile.x, tile.y, tile.type);
     });

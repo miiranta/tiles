@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const { log } = require("../utils/colorLogging");
 
 class TokenManager {
+    
   constructor() {
     this.connectedPlayers = new Map(); // playerName -> { token, connectedAt }
   }

@@ -4,6 +4,7 @@ const { COLORS } = require("../domain/enums/colors");
 const { log } = require("../utils/colorLogging");
 
 class MapController {
+
   constructor(app, io, mapManager, tokenManager) {
     this.app = app;
     this.io = io;
@@ -12,9 +13,11 @@ class MapController {
     this.setupRoutes();
     this.setupWebSocket();
   }
+
   setupRoutes() {
     const router = express.Router();
 
+    // GET /map/:x/:y/:range: Recupera blocos do mapa
     router.get("/map/:x/:y/:range", async (req, res) => {
       try {
         if (!req.params.x || !req.params.y || !req.params.range) {
@@ -52,8 +55,11 @@ class MapController {
     this.app.use(router);
     log.info("mapController", "Endpoints do mapa configurados");
   }
+
   setupWebSocket() {
     this.io.on("connection", (socket) => {
+
+      //WS “map-place”: Coloca um bloco no mapa
       socket.on("map-place", async (data) => {
         try {
           const { token, x, y, type } = data;

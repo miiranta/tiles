@@ -2,14 +2,17 @@ const express = require("express");
 const { log } = require("../utils/colorLogging");
 
 class StatsController {
+
   constructor(app, statsManager) {
     this.app = app;
     this.statsManager = statsManager;
     this.setupRoutes();
   }
+
   setupRoutes() {
     const router = express.Router();
 
+    //GET /stats/:playerName: Recupera os stats de um player
     router.get("/stats/:playerName", async (req, res) => {
       try {
         const { playerName } = req.params;

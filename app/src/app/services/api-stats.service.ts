@@ -14,10 +14,9 @@ export class ApiStatsService {
     const response = await fetch(`${this.baseUrl}/stats/${playerName}`);
     if (!response.ok) {
       throw new Error(
-        `Erro ao buscar estatísticas do jogador: ${response.statusText}`,
+        `Erro ao buscar estatísticas do jogador: ${response.statusText}`
       );
     }
-
     const data: PlayerStats = await response.json();
     return data;
   }

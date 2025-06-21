@@ -2,6 +2,7 @@ const express = require("express");
 const { log } = require("../utils/colorLogging");
 
 class PlayerController {
+
   constructor(app, io, playerManager, tokenManager) {
     this.app = app;
     this.io = io;
@@ -10,9 +11,11 @@ class PlayerController {
     this.setupRoutes();
     this.setupWebSocket();
   }
+
   setupRoutes() {
     const router = express.Router();
 
+    //GET /player/:playerName: Verifica se um player já existe
     router.get("/player/:playerName", async (req, res) => {
       try {
         const { playerName } = req.params;
@@ -51,6 +54,7 @@ class PlayerController {
       }
     });
 
+    //POST /player: Cria um novo player, se disponível
     router.post("/player", async (req, res) => {
       try {
         const { playerName, password } = req.body;
@@ -121,6 +125,7 @@ class PlayerController {
       }
     });
 
+    //POST /player/authenticate: Autentica um jogador existente
     router.post("/player/authenticate", async (req, res) => {
       try {
         const { playerName, password } = req.body;
@@ -175,6 +180,8 @@ class PlayerController {
 
       let socketPlayerName = null;
       let lastPlayerPosition = { x: 0, y: 0 };
+
+      //WS “player-update”: Atualiza a posição de um player
       socket.on("player-update", async (data) => {
         try {
           const { token, x, y } = data;
@@ -217,6 +224,8 @@ class PlayerController {
           );
         }
       });
+
+      //WS “player-remove”: Remove o player
       socket.on("disconnect", () => {
         try {
           if (socketPlayerName) {

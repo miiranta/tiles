@@ -2,6 +2,7 @@ const { Player } = require("../domain/models/playerModel");
 const { log } = require("../utils/colorLogging");
 
 class StatsManager {
+  
   constructor(database) {
     this.database = database;
   }

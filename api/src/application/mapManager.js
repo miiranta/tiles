@@ -3,6 +3,7 @@ const { COLORS } = require("../domain/enums/colors");
 const { log } = require("../utils/colorLogging");
 
 class MapManager {
+  
   constructor(database, statsManager) {
     this.database = database;
     this.statsManager = statsManager;

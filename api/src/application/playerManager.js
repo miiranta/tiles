@@ -2,11 +2,13 @@ const { Player } = require("../domain/models/playerModel");
 const { log } = require("../utils/colorLogging");
 
 class PlayerManager {
+  
   constructor(database, statsManager, tokenManager) {
     this.database = database;
     this.statsManager = statsManager;
     this.tokenManager = tokenManager;
   }
+
   async createPlayer(playerName, password) {
     try {
       const existingPlayer = await Player.findByName(playerName);

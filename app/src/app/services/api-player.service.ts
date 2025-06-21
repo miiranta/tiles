@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { WebsocketService } from './websocket.service';
 
 const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
 
@@ -9,26 +9,7 @@ const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
   providedIn: 'root',
 })
 export class ApiPlayerService {
-  constructor() {
-    this.socket = io(BASE_URL);
-  }
-
-  private socket: Socket;
-
-  emit(event: string, data: any) {
-    this.socket.emit(event, data);
-  }
-  on(event: string): Observable<any> {
-    return new Observable((observer) => {
-      this.socket.on(event, (data) => {
-        observer.next(data);
-      });
-
-      return () => {
-        this.socket.off(event);
-      };
-    });
-  }
+  constructor(private websocketService: WebsocketService) {}
 
   async checkPlayerNameAvailability(playerName: string): Promise<any> {
     return await fetch(`${BASE_URL}/player/${encodeURIComponent(playerName)}`, {
@@ -41,7 +22,7 @@ export class ApiPlayerService {
 
   async createPlayerWithPassword(
     playerName: string,
-    password: string,
+    password: string
   ): Promise<any> {
     return await fetch(`${BASE_URL}/player`, {
       method: 'POST',
@@ -71,10 +52,14 @@ export class ApiPlayerService {
   }
 
   sendPlayerUpdate(token: string, x: number, y: number) {
-    this.socket.emit('player-update', { token, x, y });
+    this.websocketService.emit('player-update', { token, x, y });
   }
 
-  sendMapPlace(token: string, x: number, y: number, type: string) {
-    this.socket.emit('map-place', { token, x, y, type });
+  onPlayerUpdate(): Observable<any> {
+    return this.websocketService.on('player-update');
+  }
+
+  onPlayerRemove(): Observable<any> {
+    return this.websocketService.on('player-remove');
   }
 }
