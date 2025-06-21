@@ -56,10 +56,11 @@ export class Game {
 
   drawLoop() {
     this.drawManager.clear();
-    this.drawManager.draw();
+    this.drawManager.draw();  
   }
+  
   apiLoop() {
     this.multiplayerManager.sendPlayerUpdate();
-    this.multiplayerManager.listenTilePlaced();
+    this.multiplayerManager.listenMapPlace();
   }
 }

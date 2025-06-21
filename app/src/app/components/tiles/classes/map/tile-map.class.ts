@@ -63,7 +63,7 @@ export class TileMap {
     const token = this.playerService.getJwtToken();
     if (!token) return;
     
-    this.apiPlayer.sendTilePlaced(token, x, y, type);
+    this.apiPlayer.sendMapPlace(token, x, y, type);
     this.apiMap.putMapTile(x, y, type);
   }
 

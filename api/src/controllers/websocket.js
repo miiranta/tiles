@@ -2,6 +2,7 @@ const { Server } = require('socket.io');
 const gameServer = require('../game/gameServer')();
 const tokenHandler = require('../utils/tokenHandler');
 const { log } = require('../utils/colorLogging');
+const { Player } = require('../database/models/Player');
 
 const setupWebsockets = (server) => {
     const io = new Server(server, {
@@ -17,11 +18,9 @@ const setupWebsocketsStreams = (io) => {
 
     io.on('connection', (socket) => {
         log.info('websocket', `Client connected: ${socket.id}`);
-        
-        // Store the player name associated with this socket
-        let socketPlayerName = null;
 
-        // Helper function to authenticate and store player name
+        let socketPlayerName = null;
+        let lastPlayerPosition = { x: 0, y: 0 };   
         const authenticateSocket = (token) => {
             const tokenInfo = tokenHandler.verifyToken(token);
             if (tokenInfo.valid) {
@@ -32,7 +31,7 @@ const setupWebsocketsStreams = (io) => {
         };
 
         // Player position updates
-        socket.on('player-update', (data) => {
+        socket.on('player-update', async (data) => {
             try {
                 const { token, x, y } = data;
                 
@@ -47,26 +46,49 @@ const setupWebsocketsStreams = (io) => {
                     return;
                 }
 
+                // Calculate distance traveled if we have a previous position
+                if (lastPlayerPosition.x !== 0 || lastPlayerPosition.y !== 0) {
+                    const distance = Math.sqrt(
+                        Math.pow(x - lastPlayerPosition.x, 2) + 
+                        Math.pow(y - lastPlayerPosition.y, 2)
+                    );
+                    
+                    // Update player stats in database (only if distance is reasonable)
+                    if (distance > 0 && distance < 1000) { // Prevent 'teleportation'
+                        try {
+                            const player = await Player.findByName(tokenInfo.playerName);
+                            if (player) {
+                                await player.updateDistanceTraveled(distance);
+                            }
+                        } catch (dbError) {
+                            log.error('websocket', `Error updating distance for ${tokenInfo.playerName}: ${dbError.message}`);
+                        }
+                    }
+                }
+                
+                // Update last position
+                lastPlayerPosition = { x, y };
+
                 // Broadcast to all other clients (not sender)
                 socket.broadcast.emit('player-update', { 
                     playerName: tokenInfo.playerName,
                     x, 
                     y 
-                });
-
+                });     
+                       
             } catch (error) {
                 log.error('websocket', `Error handling player update: ${error.message}`);
             }
         });
 
         // Tile placement
-        socket.on('tilePlaced', async (data) => {
+        socket.on('map-place', async (data) => {
             try {
                 const { token, x, y, type } = data;
                 
                 if (!token || typeof x !== 'number' || typeof y !== 'number' || !type) {
                     return;
-                }
+                }         
 
                 // Verify JWT token and store player name
                 const tokenInfo = authenticateSocket(token);
@@ -78,8 +100,18 @@ const setupWebsocketsStreams = (io) => {
                 const success = await gameServer.placeTile(x, y, type, tokenInfo.playerName);
                 
                 if (success) {
+                    // Update player tile placement stats
+                    try {
+                        const player = await Player.findByName(tokenInfo.playerName);
+                        if (player) {
+                            await player.updateTilesPlaced(type);
+                        }
+                    } catch (dbError) {
+                        log.error('websocket', `Error updating tile stats for ${tokenInfo.playerName}: ${dbError.message}`);
+                    }
+
                     // Broadcast to all clients including sender
-                    io.emit('tilePlaced', { x, y, type, playerName: tokenInfo.playerName });
+                    io.emit('map-place', { x, y, type, playerName: tokenInfo.playerName });
                     log.info('websocket', `Tile placed at (${x}, ${y}) with color ${type} by ${tokenInfo.playerName}`);
                 }
             } catch (error) {

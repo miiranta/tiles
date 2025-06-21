@@ -60,10 +60,9 @@ export class MultiplayerManager {
       }
     });
   }
-
   // Tile update
-  listenTilePlaced() {
-    this.game.apiPlayer.on('tilePlaced').subscribe((data: any) => {
+  listenMapPlace() {
+    this.game.apiPlayer.on('map-place').subscribe((data: any) => {
       const tile = new Tile(data.x, data.y, data.type);
       this.game.map.placeTileLocal(tile.x, tile.y, tile.type);
     });

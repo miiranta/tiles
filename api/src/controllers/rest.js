@@ -252,10 +252,50 @@ const setupRestEndpoints = (router) => {
                 log.success('rest', `Player authenticated: ${result.playerName}`);
             } else {
                 res.status(500).json({ error: result.message });
-            }
-
+            }     
+               
         } catch (error) {
             log.error('rest', `Error authenticating player: ${error.message}`);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    // GET /stats/:playerName
+    // Get player statistics
+    router.get('/stats/:playerName', async (req, res) => {
+        try {
+            const { playerName } = req.params;
+
+            if (!playerName) {
+                return res.status(400).json({ error: 'Player name is required' });
+            }
+
+            const player = await Player.findByName(playerName);
+            if (!player) {
+                return res.status(404).json({ error: 'Player not found' });
+            }
+
+            // Convert Map to Object for JSON serialization
+            const tilesPlacedObject = {};
+            if (player.stats.tilesPlaced) {
+                for (const [key, value] of player.stats.tilesPlaced.entries()) {
+                    tilesPlacedObject[key] = value;
+                }
+            }
+
+            const stats = {
+                playerName: player.playerName,
+                distanceTraveled: player.stats.distanceTraveled || 0,
+                tilesPlaced: tilesPlacedObject,
+                createdAt: player.createdAt,
+                lastLogin: player.lastLogin
+            };
+
+            res.json(stats);
+            log.info('rest', `Stats retrieved for player: ${playerName}`);
+
+        } catch (error) {
+            log.error('rest', `Error getting player stats: ${error.message}`);
             res.status(500).json({ error: 'Internal server error' });
         }
     });

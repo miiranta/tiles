@@ -55,7 +55,7 @@
   gap: 8px;
   padding: 6px 0;
   font-size: 13px;
-  transition: opacity 0.2s ease;
+  position: relative;
 }
 
 .player-item.current-player {
@@ -88,6 +88,29 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.stats-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .no-players {

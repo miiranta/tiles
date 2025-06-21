@@ -2,10 +2,11 @@ import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular
 import { CommonModule } from '@angular/common';
 import { MultiplayerManager } from '../../classes/managers/multiplayer-manager.class';
 import { Player } from '../../classes/player/player.class';
+import { PlayerStatsComponent } from '../player-stats/player-stats.component';
 
 @Component({
   selector: 'app-list-players',
-  imports: [CommonModule],
+  imports: [CommonModule, PlayerStatsComponent],
   templateUrl: './list-players.component.html',
   styleUrl: './list-players.component.scss'
 })
@@ -14,6 +15,9 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
   @Input() currentPlayerName: string = '';
 
   private updateInterval: any;
+  
+  showStatsModal: boolean = false;
+  selectedPlayerName: string = '';
 
   constructor(private cdr: ChangeDetectorRef) {}
   ngOnInit() {
@@ -37,7 +41,6 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
   }
 
   get totalPlayers(): number {
-    // Add 1 for the current player
     return this.allPlayers.length + 1;
   }
 
@@ -49,5 +52,23 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
 
   getPlayerStatus(player: Player): string {
     return this.isPlayerActive(player) ? 'online' : 'inactive';
+  }  
+  
+  openPlayerStats(playerName: string) {
+    if (this.showStatsModal) {
+      this.showStatsModal = false;
+      setTimeout(() => {
+        this.selectedPlayerName = playerName;
+        this.showStatsModal = true;
+      }, 100);
+    } else {
+      this.selectedPlayerName = playerName;
+      this.showStatsModal = true;
+    }
+  }
+
+  closePlayerStats() {
+    this.showStatsModal = false;
+    this.selectedPlayerName = '';
   }
 }

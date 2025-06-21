@@ -74,9 +74,9 @@ export class ApiPlayerService {
   sendPlayerUpdate(token: string, x: number, y: number) {
     this.socket.emit('player-update', { token, x, y });
   }
-
-  sendTilePlaced(token: string, x: number, y: number, type: string) {
-    this.socket.emit('tilePlaced', { token, x, y, type });
+  
+  sendMapPlace(token: string, x: number, y: number, type: string) {
+    this.socket.emit('map-place', { token, x, y, type });
   }
 
 }

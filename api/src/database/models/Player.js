@@ -18,9 +18,16 @@ const playerSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  stats: {
+    distanceTraveled: {
+      type: Number,
+      default: 0
+    },
+    tilesPlaced: {
+      type: Map,
+      of: Number,
+      default: {}
+    }
   }
 }, {
   timestamps: true
@@ -37,6 +44,20 @@ playerSchema.methods.validatePassword = function(password) {
 
 playerSchema.statics.findByName = function(playerName) {
   return this.findOne({ playerName: playerName.trim() });
+};
+
+playerSchema.methods.updateDistanceTraveled = function(distance) {
+  this.stats.distanceTraveled = (this.stats.distanceTraveled || 0) + distance;
+  return this.save();
+};
+
+playerSchema.methods.updateTilesPlaced = function(tileType) {
+  if (!this.stats.tilesPlaced) {
+    this.stats.tilesPlaced = new Map();
+  }
+  const currentCount = this.stats.tilesPlaced.get(tileType) || 0;
+  this.stats.tilesPlaced.set(tileType, currentCount + 1);
+  return this.save();
 };
 
 const Player = mongoose.model('Player', playerSchema);
