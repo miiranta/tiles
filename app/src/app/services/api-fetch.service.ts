@@ -32,9 +32,8 @@ export class ApiFetchService {
       };
     });
   }
-
-  sendPlayerPosition(playerId: string, x: number, y: number) {
-    this.socket.emit('playerPosition', { playerId, x, y });
+  sendPlayerPosition(playerName: string, x: number, y: number) {
+    this.socket.emit('playerPosition', { playerName, x, y });
   }
 
   // REST

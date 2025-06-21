@@ -22,10 +22,13 @@ export class MultiplayerManager {
     const player_coords = this.game.player.getPositionFloat();
     this.game.api.sendPlayerPosition(this.game.player.playerName, player_coords.x, player_coords.y);
   }
-
   listenPlayerPositions() {
     this.game.api.on('playerPosition').subscribe((data: any) => {
-      // Test if the player is already in the map
+
+      if (data.playerName === this.game.player.playerName) {
+        return;
+      }
+      
       if (this.all_players.has(data.playerName)) {
         var player = this.all_players.get(data.playerName)!;
         player.x = data.x;

@@ -14,13 +14,13 @@ export class Game {
   player!: Player;
   canvas: any;
   api: any;
-  playerId: string;
+  playerName: string;
 
-  constructor(canvas: any, api: any, playerId: string) {
-    this.playerId = playerId;
-    if(this.playerId == '' || this.playerId == undefined) {
-      playerId = Math.random().toString(36).substring(2, 15);
-      this.playerId = playerId;
+  constructor(canvas: any, api: any, playerName: string) {
+    this.playerName = playerName;
+    if(this.playerName == '' || this.playerName == undefined) {
+      playerName = Math.random().toString(36).substring(2, 15);
+      this.playerName = playerName;
     }
     
     this.canvas = canvas.nativeElement;
@@ -32,7 +32,7 @@ export class Game {
     this.map = new TileMap(this.api);
     if(!this.map) { return; }
 
-    this.player = new Player(this.playerId);
+    this.player = new Player(this.playerName);
     if(!this.player) { return; }
 
     this.drawManager.setGameTarget(this);
