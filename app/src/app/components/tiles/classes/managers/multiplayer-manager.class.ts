@@ -8,22 +8,29 @@ export class MultiplayerManager {
   public all_players: Map<string, Player> = new Map();
 
   constructor() { 
-    // Do nothing here, please
+    // Do nothing here
   }
 
   setGameTarget(game: Game) {
     this.game = game;
 
-    this.listenPlayerPositions();
+    this.listenPlayerUpdates();
+    this.listenPlayerRemove();
   }
-  // Player position
-  sendPlayerPosition() {
+    // Player position updates
+  sendPlayerUpdate() {
     const player_coords = this.game.player.getPositionFloat();
-    this.game.apiPlayer.sendPlayerPosition(this.game.player.playerName, player_coords.x, player_coords.y);
-  }  
+
+    const token = this.game.playerService.getJwtToken();
+    
+    if (token) {
+      this.game.apiPlayer.sendPlayerUpdate(token, player_coords.x, player_coords.y);
+    }
+  }
   
-  listenPlayerPositions() {
-    this.game.apiPlayer.on('playerPosition').subscribe((data: any) => {
+  
+  listenPlayerUpdates() {
+    this.game.apiPlayer.on('player-update').subscribe((data: any) => {
 
       if (data.playerName === this.game.player.playerName) {
         return;
@@ -44,16 +51,16 @@ export class MultiplayerManager {
     });
   }
 
-  filterOldPlayers() {
-    const now = Date.now();
-    const timeout = 1000; // 1 seconds
-
-    this.all_players.forEach((player, playerName) => {
-      if (now - player.last_update > timeout) {
-        this.all_players.delete(playerName);
+  // Listen for player disconnect notifications
+  listenPlayerRemove() {
+    this.game.apiPlayer.on('player-remove').subscribe((data: any) => {
+      if (data.playerName && this.all_players.has(data.playerName)) {
+        this.all_players.delete(data.playerName);
+        console.log(`Player ${data.playerName} disconnected`);
       }
     });
   }
+
   // Tile update
   listenTilePlaced() {
     this.game.apiPlayer.on('tilePlaced').subscribe((data: any) => {

@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PlayerService } from '../../services/player.service';
 import { LoadingService } from '../../services/loading.service';
+import { ApiPlayerService } from '../../services/api-player.service';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-choose-name',
@@ -16,17 +18,43 @@ export class ChooseNameComponent {
   constructor(
     private router: Router, 
     private playerService: PlayerService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private apiPlayerService: ApiPlayerService,
+    private popupService: PopupService
   ) {}
 
-  openGame() {
+  async openGame() {
     if (this.name.trim() && !this.loadingService.isLoading()) {
-      this.playerService.setPlayerName(this.name);
+      this.loadingService.show('Criando jogador...');
       
-      this.loadingService.show('Entrando no jogo...');
-      setTimeout(() => {
-        this.router.navigate(['/tiles']);
-      }, 1500);
+      try {
+        const response = await this.apiPlayerService.createPlayer(this.name.trim());
+        const data = await response.json();
+        if (response.ok && data.success) {
+          // Store player data
+          this.playerService.setPlayerName(data.playerName);
+          this.playerService.setJwtToken(data.token);
+          
+          this.loadingService.setMessage('Entrando no jogo...');
+          setTimeout(() => {
+            this.loadingService.hide();
+            this.router.navigate(['/tiles']);
+          }, 1000);
+        } else {
+          this.loadingService.hide();
+          this.popupService.error(
+            'Erro ao criar jogador', 
+            data.error || 'Falha ao criar jogador'
+          );
+        }
+      } catch (error) {
+        this.loadingService.hide();
+        this.popupService.error(
+          'Erro de conexão', 
+          'Erro de rede. Tente novamente.'
+        );
+        console.error('Error creating player:', error);
+      }
     }
   }
 

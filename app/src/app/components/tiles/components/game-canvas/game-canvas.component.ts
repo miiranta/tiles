@@ -2,6 +2,7 @@ import { Component, inject, Input, ViewChild, Output, EventEmitter, OnDestroy, O
 
 import { ApiMapService } from '../../../../services/api-map.service';
 import { ApiPlayerService } from '../../../../services/api-player.service';
+import { PlayerService } from '../../../../services/player.service';
 import { COLORS } from '../../enums/colors.model';
 import { PLACE_TILE_TIMEOUT } from '../../constants/game-config.consts';
 import { Game } from '../../classes/game.class';
@@ -22,6 +23,7 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
 
   apiMap: ApiMapService = inject(ApiMapService);
   apiPlayer: ApiPlayerService = inject(ApiPlayerService);
+  playerService: PlayerService = inject(PlayerService);
   loadingService: LoadingService = inject(LoadingService);
 
   coords: any = { x: 0, y: 0 };
@@ -34,10 +36,9 @@ export class GameCanvasComponent implements OnChanges, OnDestroy {
   ngAfterViewInit() {
     this.initializeGame();
   }
-
   private initializeGame() {
     if (this.playerName && this.playerName.trim() && this.gameCanvas && !this.gameInitialized) {
-      this.game = new Game(this.gameCanvas, this.apiMap, this.apiPlayer, this.playerName);
+      this.game = new Game(this.gameCanvas, this.apiMap, this.apiPlayer, this.playerService, this.playerName);
       this.gameInitialized = true;
 
       this.canvasSetSize();

@@ -3,6 +3,7 @@ const path                  = require('path');
 const cors                  = require('cors');
 const { COLORS }            = require('../database/models/Tile');
 const gameServer            = require('../game/gameServer')();
+const tokenHandler          = require('../utils/tokenHandler');
 const { log }               = require('../utils/colorLogging');
 
 // Load environment variables if not already loaded
@@ -105,6 +106,38 @@ const setupRestEndpoints = (router) => {
                 res.status(500).json({ error: 'Failed to place tile' });
             }        } catch (error) {
             log.error('rest', `Error placing tile: ${error.message}`);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    // POST /player - Create new player with JWT token
+    router.post('/player', (req, res) => {
+        try {
+            const { playerName, socketId } = req.body;
+
+            if (!playerName || !socketId) {
+                return res.status(400).json({ error: 'Nome de jogador é obrigatório.' });
+            }
+
+            if (playerName.trim().length < 2 || playerName.trim().length > 20) {
+                return res.status(400).json({ error: 'Nomes de jogador devem ter entre 2 e 20 caracteres.' });
+            }
+
+            const result = tokenHandler.generateToken(playerName.trim(), socketId);
+
+            if (result.success) {
+                res.status(201).json({
+                    success: true,
+                    token: result.token,
+                    playerName: result.playerName
+                });
+                log.success('rest', `Player created: ${result.playerName}`);
+            } else {
+                res.status(409).json({ error: result.message });
+            }
+
+        } catch (error) {
+            log.error('rest', `Error creating player: ${error.message}`);
             res.status(500).json({ error: 'Internal server error' });
         }
     });

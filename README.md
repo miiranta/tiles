@@ -13,6 +13,7 @@ SD + WEBDEV Project.
 - Create "environments" folder in "api/" and ".env" file inside it with the following content:
 ```typescript
     MONGODB_CONNECTION_STRING='mongodb://...'
+    JWT_SECRET='senha_muito_secreta_e_segura'
     PORT=3000
 ```
 

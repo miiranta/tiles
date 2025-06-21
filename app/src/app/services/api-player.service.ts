@@ -3,13 +3,15 @@ import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiPlayerService {
 
   constructor() {
-    this.socket = io(`http://${environment.BASE_URL}:${environment.PORT}`);
+    this.socket = io(BASE_URL);
   }
 
   // WebSocket
@@ -32,7 +34,26 @@ export class ApiPlayerService {
     });
   }
 
-  sendPlayerPosition(playerName: string, x: number, y: number) {
-    this.socket.emit('playerPosition', { playerName, x, y });
+  async createPlayer(playerName: string): Promise<any> {
+    return await fetch(`${BASE_URL}/player`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        playerName,
+        socketId: this.socket.id
+      })
+    });
   }
+
+  sendPlayerUpdate(token: string, x: number, y: number) {
+    this.socket.emit('player-update', { token, x, y });
+  }
+
+  sendTilePlaced(token: string, x: number, y: number, type: string) {
+    this.socket.emit('tilePlaced', { token, x, y, type });
+  }
+
 }

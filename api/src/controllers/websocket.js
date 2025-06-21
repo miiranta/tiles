@@ -1,5 +1,6 @@
 const { Server } = require('socket.io');
 const gameServer = require('../game/gameServer')();
+const tokenHandler = require('../utils/tokenHandler');
 const { log } = require('../utils/colorLogging');
 
 const setupWebsockets = (server) => {
@@ -18,40 +19,55 @@ const setupWebsocketsStreams = (io) => {
         log.info('websocket', `Client connected: ${socket.id}`);
 
         // Player position updates
-        socket.on('playerPosition', (data) => {
+        socket.on('player-update', (data) => {
             try {
-                const { playerName, x, y } = data;
+                const { token, x, y } = data;
                 
-                if (typeof x !== 'number' || typeof y !== 'number' || !playerName) {
+                if (!token || typeof x !== 'number' || typeof y !== 'number') {
+                    return;
+                }
+
+                // Verify JWT token
+                const tokenInfo = tokenHandler.verifyToken(token);
+                if (!tokenInfo.valid) {
+                    socket.emit('auth-error', { message: 'Invalid or expired token' });
                     return;
                 }
 
                 // Broadcast to all other clients (not sender)
-                socket.broadcast.emit('playerPosition', { 
-                    playerName, 
+                socket.broadcast.emit('player-update', { 
+                    playerName: tokenInfo.playerName,
                     x, 
                     y 
                 });
+
             } catch (error) {
-                log.error('websocket', `Error handling player position: ${error.message}`);
+                log.error('websocket', `Error handling player update: ${error.message}`);
             }
         });
 
         // Tile placement
         socket.on('tilePlaced', async (data) => {
             try {
-                const { x, y, type, playerName } = data;
+                const { token, x, y, type } = data;
                 
-                if (typeof x !== 'number' || typeof y !== 'number' || !type) {
+                if (!token || typeof x !== 'number' || typeof y !== 'number' || !type) {
                     return;
                 }
 
-                const success = await gameServer.placeTile(x, y, type, playerName || 'anonymous');
+                // Verify JWT token
+                const tokenInfo = tokenHandler.verifyToken(token);
+                if (!tokenInfo.valid) {
+                    socket.emit('auth-error', { message: 'Invalid or expired token' });
+                    return;
+                }
+
+                const success = await gameServer.placeTile(x, y, type, tokenInfo.playerName);
                 
                 if (success) {
                     // Broadcast to all clients including sender
-                    io.emit('tilePlaced', { x, y, type, playerName });
-                    log.info('websocket', `Tile placed at (${x}, ${y}) with color ${type} by ${playerName || 'anonymous'}`);
+                    io.emit('tilePlaced', { x, y, type, playerName: tokenInfo.playerName });
+                    log.info('websocket', `Tile placed at (${x}, ${y}) with color ${type} by ${tokenInfo.playerName}`);
                 }
             } catch (error) {
                 log.error('websocket', `Error placing tile: ${error.message}`);
@@ -60,7 +76,18 @@ const setupWebsocketsStreams = (io) => {
 
         // Disconnect
         socket.on('disconnect', () => {
-            log.info('websocket', `Client disconnected: ${socket.id}`);
+            try {
+                const playerName = tokenHandler.revokeToken(socket.id);
+                if (playerName) {
+                    // Notify all clients that this player has disconnected
+                    socket.broadcast.emit('player-remove', { playerName });
+                    log.info('websocket', `Player disconnected: ${playerName} (${socket.id})`);
+                } else {
+                    log.info('websocket', `Client disconnected: ${socket.id}`);
+                }
+            } catch (error) {
+                log.error('websocket', `Error handling disconnect: ${error.message}`);
+            }
         });
 
     });

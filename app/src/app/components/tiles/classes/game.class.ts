@@ -15,9 +15,10 @@ export class Game {
   canvas: any;
   apiMap: any;
   apiPlayer: any;
+  playerService: any;
   playerName: string;
 
-  constructor(canvas: any, apiMap: any, apiPlayer: any, playerName: string) {
+  constructor(canvas: any, apiMap: any, apiPlayer: any, playerService: any, playerName: string) {
     this.playerName = playerName;
     if(this.playerName == '' || this.playerName == undefined) {
       playerName = Math.random().toString(36).substring(2, 15);
@@ -29,9 +30,11 @@ export class Game {
 
     this.apiMap = apiMap;
     this.apiPlayer = apiPlayer;
+    this.playerService = playerService;
+    this.apiPlayer = apiPlayer;
     if(!this.apiMap || !this.apiPlayer) { return; }
 
-    this.map = new TileMap(this.apiMap, this.apiPlayer);
+    this.map = new TileMap(this.apiMap, this.apiPlayer, this.playerService);
     if(!this.map) { return; }
 
     this.player = new Player(this.playerName);
@@ -55,10 +58,8 @@ export class Game {
     this.drawManager.clear();
     this.drawManager.draw();
   }
-
   apiLoop() {
-    this.multiplayerManager.sendPlayerPosition();
-    this.multiplayerManager.filterOldPlayers();
+    this.multiplayerManager.sendPlayerUpdate();
     this.multiplayerManager.listenTilePlaced();
   }
 }

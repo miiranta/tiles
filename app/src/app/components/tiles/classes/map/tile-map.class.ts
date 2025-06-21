@@ -4,10 +4,12 @@ import { Tile } from "./tile.class";
 export class TileMap {
   private apiMap: any;
   private apiPlayer: any;
+  private playerService: any;
   
-  constructor(apiMap: any, apiPlayer: any) {
+  constructor(apiMap: any, apiPlayer: any, playerService: any) {
     this.apiMap = apiMap;
     this.apiPlayer = apiPlayer;
+    this.playerService = playerService;
   }
 
   chunkFetchPending: string[] = [];
@@ -48,16 +50,20 @@ export class TileMap {
 
     return new Tile(x, y);
   }
-  
-  placeTile(x: number, y: number, type: string) {
+    placeTile(x: number, y: number, type: string) {
     const key = `${x},${y}`;
 
     // Check if the tile exists
     if (!this.map.has(key)) return;
 
     // Check if the tile type is the same
-    if (this.map.get(key)?.type === type) return;    
-    this.apiPlayer.emit('tilePlaced', { x, y, type });
+    if (this.map.get(key)?.type === type) return;
+    
+    // Get JWT token from player service
+    const token = this.playerService.getJwtToken();
+    if (!token) return;
+    
+    this.apiPlayer.sendTilePlaced(token, x, y, type);
     this.apiMap.putMapTile(x, y, type);
   }
 
