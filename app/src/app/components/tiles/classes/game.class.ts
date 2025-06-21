@@ -13,10 +13,11 @@ export class Game {
   map!: TileMap;
   player!: Player;
   canvas: any;
-  api: any;
+  apiMap: any;
+  apiPlayer: any;
   playerName: string;
 
-  constructor(canvas: any, api: any, playerName: string) {
+  constructor(canvas: any, apiMap: any, apiPlayer: any, playerName: string) {
     this.playerName = playerName;
     if(this.playerName == '' || this.playerName == undefined) {
       playerName = Math.random().toString(36).substring(2, 15);
@@ -26,10 +27,11 @@ export class Game {
     this.canvas = canvas.nativeElement;
     if(!this.canvas) { return; }
 
-    this.api = api;
-    if(!this.api) { return; }
+    this.apiMap = apiMap;
+    this.apiPlayer = apiPlayer;
+    if(!this.apiMap || !this.apiPlayer) { return; }
 
-    this.map = new TileMap(this.api);
+    this.map = new TileMap(this.apiMap, this.apiPlayer);
     if(!this.map) { return; }
 
     this.player = new Player(this.playerName);

@@ -16,14 +16,14 @@ export class MultiplayerManager {
 
     this.listenPlayerPositions();
   }
-
   // Player position
   sendPlayerPosition() {
     const player_coords = this.game.player.getPositionFloat();
-    this.game.api.sendPlayerPosition(this.game.player.playerName, player_coords.x, player_coords.y);
-  }
+    this.game.apiPlayer.sendPlayerPosition(this.game.player.playerName, player_coords.x, player_coords.y);
+  }  
+  
   listenPlayerPositions() {
-    this.game.api.on('playerPosition').subscribe((data: any) => {
+    this.game.apiPlayer.on('playerPosition').subscribe((data: any) => {
 
       if (data.playerName === this.game.player.playerName) {
         return;
@@ -54,10 +54,9 @@ export class MultiplayerManager {
       }
     });
   }
-
   // Tile update
   listenTilePlaced() {
-    this.game.api.on('tilePlaced').subscribe((data: any) => {
+    this.game.apiPlayer.on('tilePlaced').subscribe((data: any) => {
       const tile = new Tile(data.x, data.y, data.type);
       this.game.map.placeTileLocal(tile.x, tile.y, tile.type);
     });

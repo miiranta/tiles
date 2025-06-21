@@ -2,8 +2,13 @@ import { CHUNK_SIZE } from "../../constants/game-config.consts";
 import { Tile } from "./tile.class";
 
 export class TileMap {
-  private api: any;
-  constructor(api: any) {this.api = api;}
+  private apiMap: any;
+  private apiPlayer: any;
+  
+  constructor(apiMap: any, apiPlayer: any) {
+    this.apiMap = apiMap;
+    this.apiPlayer = apiPlayer;
+  }
 
   chunkFetchPending: string[] = [];
 
@@ -27,7 +32,7 @@ export class TileMap {
     if (!this.chunkFetchPending.includes(chunk_key)) {
       this.chunkFetchPending.push(chunk_key);
 
-      this.api.getMapTiles(center_x, center_y, CHUNK_SIZE).then(async (response: Response) => {
+      this.apiMap.getMapTiles(center_x, center_y, CHUNK_SIZE).then(async (response: Response) => {
         if(response.status == 200) {
           const json = response.json();
           json.then((data) => {
@@ -51,10 +56,9 @@ export class TileMap {
     if (!this.map.has(key)) return;
 
     // Check if the tile type is the same
-    if (this.map.get(key)?.type === type) return;
-
-    this.api.emit('tilePlaced', { x, y, type });
-    this.api.putMapTile(x, y, type);
+    if (this.map.get(key)?.type === type) return;    
+    this.apiPlayer.emit('tilePlaced', { x, y, type });
+    this.apiMap.putMapTile(x, y, type);
   }
 
   placeTileLocal(x: number, y: number, type: string) {
