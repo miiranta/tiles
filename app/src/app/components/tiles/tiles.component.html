@@ -8,7 +8,8 @@
   [playerName]="playerName" 
   [selectedColor]="selected_color"
   (coordsChanged)="onCoordsChanged($event)"
-  (fpsChanged)="onFpsChanged($event)">
+  (fpsChanged)="onFpsChanged($event)"
+  (gameInitialized)="onGameInitialized($event)">
 </app-game-canvas>
 
 <app-color-selector 
@@ -16,3 +17,9 @@
   [selectedColor]="selected_color"
   (colorSelected)="onColorSelected($event)">
 </app-color-selector>
+
+<app-list-players 
+  *ngIf="game"
+  [multiplayerManager]="game.multiplayerManager"
+  [currentPlayerName]="playerName">
+</app-list-players>

@@ -17,29 +17,31 @@ import { LoadingService } from '../../../../services/loading.service';
 export class GameCanvasComponent implements OnChanges, OnDestroy {
   @ViewChild('gameCanvas') gameCanvas: any;
   @Input() playerName: string = "";
-  @Input() selectedColor: string = COLORS[0];
+  @Input() selectedColor: string = COLORS[0];  
   @Output() coordsChanged = new EventEmitter<any>();
   @Output() fpsChanged = new EventEmitter<number>();
+  @Output() gameInitialized = new EventEmitter<any>();
 
   apiMap: ApiMapService = inject(ApiMapService);
   apiPlayer: ApiPlayerService = inject(ApiPlayerService);
   playerService: PlayerService = inject(PlayerService);
   loadingService: LoadingService = inject(LoadingService);
-
   coords: any = { x: 0, y: 0 };
   fps: number = 0;
   game?: Game = undefined;
   placeTileTimeout: any = null;
   statsInterval: any = null;
-  gameInitialized: boolean = false;
+  isGameInitialized: boolean = false;
   
   ngAfterViewInit() {
     this.initializeGame();
-  }
+  }  
+  
   private initializeGame() {
-    if (this.playerName && this.playerName.trim() && this.gameCanvas && !this.gameInitialized) {
+    if (this.playerName && this.playerName.trim() && this.gameCanvas && !this.isGameInitialized) {
       this.game = new Game(this.gameCanvas, this.apiMap, this.apiPlayer, this.playerService, this.playerName);
-      this.gameInitialized = true;
+      this.isGameInitialized = true;
+      this.gameInitialized.emit(this.game);
 
       this.canvasSetSize();
       window.addEventListener('resize', this.canvasSetSize.bind(this));
