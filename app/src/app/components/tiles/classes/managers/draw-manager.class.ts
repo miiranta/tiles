@@ -2,6 +2,7 @@ import { TILE_SIZE, DRAW_ALL_MAP, RENDER_DISTANCE } from "../../constants/game-c
 import { Game } from "../game.class";
 import { Player } from "../player/player.class";
 import { Tile } from "../map/tile.class";
+import { MultiplayerPlayer } from "../../interfaces/multiplayer-player.interface";
 
 export class DrawManager {
   private ctx: any;
@@ -106,13 +107,13 @@ export class DrawManager {
 
     }
   }
-
+  
   drawOtherPlayers() {
     if (this.ctx) {
-      this.game.multiplayerManager.all_players.forEach((player: Player) => {
+      this.game.multiplayerManager.all_players.forEach((player: MultiplayerPlayer) => {
         if(player.playerName == this.game.player.playerName) return;
 
-        const player_coords = player.getPositionFloat();
+        const player_coords = { x: player.x, y: player.y };
         const relative_x = player_coords.x - this.game.player.getPositionFloat().x;
         const relative_y = player_coords.y - this.game.player.getPositionFloat().y;
 

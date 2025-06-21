@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MultiplayerManager } from '../../classes/managers/multiplayer-manager.class';
-import { Player } from '../../classes/player/player.class';
+import { MultiplayerPlayer } from '../../interfaces/multiplayer-player.interface';
 import { PlayerStatsComponent } from '../player-stats/player-stats.component';
 
 @Component({
@@ -32,8 +32,7 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
       clearInterval(this.updateInterval);
     }
   }
-
-  get allPlayers(): Player[] {
+  get allPlayers(): MultiplayerPlayer[] {
     if (!this.multiplayerManager) {
       return [];
     }
@@ -43,16 +42,15 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
   get totalPlayers(): number {
     return this.allPlayers.length + 1;
   }
-
-  isPlayerActive(player: Player): boolean {
+  isPlayerActive(player: MultiplayerPlayer): boolean {
     // Consider a player active if they updated within the last 30 seconds
     const thirtySecondsAgo = Date.now() - 30000;
     return player.last_update > thirtySecondsAgo;
   }
 
-  getPlayerStatus(player: Player): string {
+  getPlayerStatus(player: MultiplayerPlayer): string {
     return this.isPlayerActive(player) ? 'online' : 'inactive';
-  }  
+  }
   
   openPlayerStats(playerName: string) {
     if (this.showStatsModal) {

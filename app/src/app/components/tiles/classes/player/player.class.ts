@@ -1,6 +1,8 @@
 import { TICKS_PER_SECOND } from "../../constants/game-config.consts";
+import { Player as IPlayer } from "../../interfaces/player.interface";
+import { Position, Speed } from "../../interfaces/player.interface";
 
-export class Player {
+export class Player implements IPlayer {
   private x_speed: number = 0;
   private y_speed: number = 0;
   public x: number = 0;
@@ -13,19 +15,18 @@ export class Player {
     this.playerName = playerName;
     this.randomRgbColor = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
   }
-
-  getPosition() {
+  getPosition(): Position {
     const x_int = Math.round(this.x);
     const y_int = Math.round(this.y);
 
     return { x: x_int, y: y_int };
   }
 
-  getPositionFloat() {
+  getPositionFloat(): Position {
     return { x: this.x, y: this.y };
   }
 
-  getSpeed() {
+  getSpeed(): Speed {
     const x_speed_int = Math.round(this.x_speed);
     const y_speed_int = Math.round(this.y_speed);
 

@@ -62,7 +62,6 @@ class MapController {
           // Verify JWT token
           const tokenInfo = this.tokenManager.verifyToken(token);
           if (!tokenInfo || !tokenInfo.valid) {
-            socket.emit('auth-error', { message: 'Invalid or expired token' });
             return;
           }
 
@@ -75,7 +74,6 @@ class MapController {
           const success = await this.mapManager.placeTile(x, y, type, tokenInfo.playerName);
           
           if (success) {
-            // Broadcast to all clients including sender IMMEDIATELY
             this.io.emit('map-place', { x, y, type, playerName: tokenInfo.playerName });
             log.info('mapController', `Tile placed at (${x}, ${y}) with color ${type} by ${tokenInfo.playerName}`);
           }

@@ -80,7 +80,8 @@ class PlayerController {
           }
 
           log.success('playerController', `Player created in database: ${trimmedName}`);
-        }        // Generate token for the session
+        }        
+
         const tokenResult = this.tokenManager.generateToken(trimmedName);
 
         if (tokenResult.success) {
@@ -145,15 +146,6 @@ class PlayerController {
       let socketPlayerName = null;
       let lastPlayerPosition = { x: 0, y: 0 };   
       
-      const authenticateSocket = (token) => {
-        const tokenInfo = this.tokenManager.verifyToken(token);
-        if (tokenInfo.valid) {
-          socketPlayerName = tokenInfo.playerName;
-          return tokenInfo;
-        }
-        return null;
-      };
-
       // Player position updates
       socket.on('player-update', async (data) => {
         try {
@@ -163,21 +155,21 @@ class PlayerController {
             return;
           }
 
-          // Verify JWT token and store player name
-          const tokenInfo = authenticateSocket(token);
-          if (!tokenInfo) {
-            socket.emit('auth-error', { message: 'Invalid or expired token' });
+          // Verify JWT token
+          const tokenInfo = this.tokenManager.verifyToken(token);
+          if (!tokenInfo || !tokenInfo.valid) {
             return;
-          }                
-          
-          // Update player position and calculate distance
+          }
+
           this.playerManager.updatePlayerPosition(
             tokenInfo.playerName, 
             x, 
             y, 
             lastPlayerPosition.x, 
             lastPlayerPosition.y
-          );
+          ).catch(err => {
+            log.error('playerController', `Error updating player position: ${err.message}`);
+          });
           
           lastPlayerPosition = { x, y };
 

@@ -1,4 +1,6 @@
-export class Tile {
+import { Tile as ITile } from "../../interfaces/tile.interface";
+
+export class Tile implements ITile {
   type = 'white';
   x = 0;
   y = 0;

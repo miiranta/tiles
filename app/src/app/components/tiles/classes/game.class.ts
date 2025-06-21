@@ -38,29 +38,29 @@ export class Game {
     if(!this.map) { return; }
 
     this.player = new Player(this.playerName);
-    if(!this.player) { return; }
-
+    if(!this.player) { return; }    
     this.drawManager.setGameTarget(this);
-    this.multiplayerManager.setGameTarget(this);
-
-    setInterval(this.gameLoop.bind(this), 1000 / TICKS_PER_SECOND);
-    setInterval(this.drawLoop.bind(this), 0);
-    setInterval(this.apiLoop.bind(this), 5);
+    this.multiplayerManager.setGameTarget(this);    
+    
+    setInterval(this.gameLoop.bind(this), 1000 / TICKS_PER_SECOND); // Game logic
+    setInterval(this.apiLoop.bind(this), 50);
+    this.drawLoop();
   }
 
   gameLoop() {
-    // Update player speed
     this.player.updateSpeed(this.keyManager.keyMap);
     this.player.updatePosition();
+    
+    this.multiplayerManager.updatePlayerPositions();
   }
 
   drawLoop() {
     this.drawManager.clear();
     this.drawManager.draw();  
+    
+    requestAnimationFrame(() => this.drawLoop());
   }
-  
-  apiLoop() {
+    apiLoop() {
     this.multiplayerManager.sendPlayerUpdate();
-    this.multiplayerManager.listenMapPlace();
   }
 }

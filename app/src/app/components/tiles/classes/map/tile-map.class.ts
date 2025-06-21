@@ -50,7 +50,8 @@ export class TileMap {
 
     return new Tile(x, y);
   }
-    placeTile(x: number, y: number, type: string) {
+  
+  placeTile(x: number, y: number, type: string) {
     const key = `${x},${y}`;
 
     // Check if the tile exists

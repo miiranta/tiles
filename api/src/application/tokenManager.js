@@ -82,10 +82,6 @@ class TokenManager {
             return null;
         }
     }
-
-    getConnectedPlayers() {
-        return Array.from(this.connectedPlayers.keys());
-    }    
     
     isNameAvailable(playerName) {
         return !this.connectedPlayers.has(playerName);

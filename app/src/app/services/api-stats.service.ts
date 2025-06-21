@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-
-export interface PlayerStats {
-  playerName: string;
-  distanceTraveled: number;
-  tilesPlaced: { [tileType: string]: number };
-  createdAt: string;
-  lastLogin: string;
-}
+import { PlayerStats } from '../components/tiles/interfaces/player-stats.interface';
 
 @Injectable({
   providedIn: 'root'

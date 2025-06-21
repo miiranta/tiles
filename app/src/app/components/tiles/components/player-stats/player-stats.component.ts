@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, Inject } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { ApiStatsService, PlayerStats } from '../../../../services/api-stats.service';
+import { ApiStatsService } from '../../../../services/api-stats.service';
+import { PlayerStats } from '../../interfaces/player-stats.interface';
 import { LoadingService } from '../../../../services/loading.service';
 
 @Component({
@@ -72,10 +73,9 @@ export class PlayerStatsComponent implements OnInit, OnChanges {
     return Object.keys(this.playerStats.tilesPlaced)
       .sort((a, b) => this.playerStats!.tilesPlaced[b] - this.playerStats!.tilesPlaced[a]);
   }
-
   getTotalTilesPlaced(): number {
     if (!this.playerStats?.tilesPlaced) return 0;
-    return Object.values(this.playerStats.tilesPlaced).reduce((sum, count) => sum + count, 0);
+    return Object.values(this.playerStats.tilesPlaced).reduce((sum: number, count: number) => sum + count, 0);
   }
 
   formatDate(dateString: string): string {

@@ -6,73 +6,51 @@ class MapManager {
   constructor(database, statsManager) {
     this.database = database;
     this.statsManager = statsManager;
-  }
-
-  async getTile(x, y) {
-    try {
-      let tile = await Tile.findOne({ x, y });
-      
-      if (!tile) {
-        // Create a new tile with default type based on coordinates
-        tile = new Tile({ x, y });
-        tile.setDefaultType();
-        await tile.save();
-      }
-      
-      return {
-        x: tile.x,
-        y: tile.y,
-        type: tile.type
-      };
-    } catch (error) {
-      log.error('mapManager', `Error getting tile: ${error.message}`);
-      // Return a default tile on error
-      return {
-        x,
-        y,
-        type: Tile.getDefaultType(x, y)
-      };
-    }
-  }
-
-  async getTiles(centerX, centerY, render) {
+  }  
+  
+  async getTiles(centerX, centerY, range) {
     try {
       const tiles = [];
-      const halfRender = Math.floor(render / 2);
+      const halfRange = Math.floor(range / 2);
       
-      const minX = centerX - halfRender;
-      const maxX = centerX + halfRender;
-      const minY = centerY - halfRender;
-      const maxY = centerY + halfRender;
+      const minX = centerX - halfRange;
+      const maxX = centerX + halfRange;
+      const minY = centerY - halfRange;
+      const maxY = centerY + halfRange;
       
       const existingTiles = await Tile.find({
         x: { $gte: minX, $lte: maxX },
         y: { $gte: minY, $lte: maxY }
-      });
+      }).select('x y type').lean();
       
       const tileMap = new Map();
       existingTiles.forEach(tile => {
         tileMap.set(`${tile.x},${tile.y}`, tile);
       });
       
+      const totalTiles = (maxX - minX + 1) * (maxY - minY + 1);
+      tiles.length = totalTiles;
+      let index = 0;
+      
       for (let i = minX; i <= maxX; i++) {
         for (let j = minY; j <= maxY; j++) {
           const key = `${i},${j}`;
-          let tile = tileMap.get(key);
+          const tile = tileMap.get(key);
           
           if (!tile) {
-            tiles.push({
+            tiles[index] = {
               x: i,
               y: j,
               type: Tile.getDefaultType(i, j)
-            });
+            };
           } else {
-            tiles.push({
+            tiles[index] = {
               x: tile.x,
               y: tile.y,
               type: tile.type
-            });
+            };
           }
+          index++;
         }
       }
       
@@ -105,10 +83,11 @@ class MapManager {
       
       // Update player stats
       if (this.statsManager && playerName !== 'anonymous') {
-        await this.statsManager.updateTilesPlaced(playerName, type);
+        this.statsManager.updateTilesPlaced(playerName, type);
       }
       
       return true;
+      
     } catch (error) {
       log.error('mapManager', `Error placing tile: ${error.message}`);
       return false;
