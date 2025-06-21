@@ -32,21 +32,8 @@ export class ApiPlayerService {
         this.socket.off(event);
       };
     });
-  }
-  async createPlayer(playerName: string): Promise<any> {
-    return await fetch(`${BASE_URL}/player`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        playerName,
-        socketId: this.socket.id
-      })
-    });
-  }
-  
+  }  
+
   async checkPlayerNameAvailability(playerName: string): Promise<any> {
     return await fetch(`${BASE_URL}/player/${encodeURIComponent(playerName)}`, {
       method: 'GET',
@@ -65,8 +52,7 @@ export class ApiPlayerService {
       },
       body: JSON.stringify({
         playerName,
-        password,
-        socketId: this.socket.id
+        password
       })
     });
   }
@@ -80,8 +66,7 @@ export class ApiPlayerService {
       },
       body: JSON.stringify({
         playerName,
-        password,
-        socketId: this.socket.id
+        password
       })
     });
   }

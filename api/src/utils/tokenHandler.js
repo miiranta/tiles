@@ -3,11 +3,10 @@ const { log } = require('./colorLogging');
 
 class TokenHandler {
     constructor() {
-        this.connectedPlayers = new Map(); // playerName -> { socketId, token, connectedAt }
-        this.socketToPlayer = new Map(); // socketId -> playerName
+        this.connectedPlayers = new Map(); // playerName -> { token, connectedAt }
     }
-
-    generateToken(playerName, socketId) {
+    
+    generateToken(playerName) {
         try {
             if (this.connectedPlayers.has(playerName)) {
                 return {
@@ -18,8 +17,7 @@ class TokenHandler {
 
             const token = jwt.sign(
                 { 
-                    playerName, 
-                    socketId,
+                    playerName,
                     timestamp: Date.now()
                 },
                 process.env.JWT_SECRET,
@@ -27,12 +25,9 @@ class TokenHandler {
             );
 
             this.connectedPlayers.set(playerName, {
-                socketId,
                 token,
                 connectedAt: new Date()
             });
-
-            this.socketToPlayer.set(socketId, playerName);
 
             log.success('tokenHandler', `Token generated for player: ${playerName}`);
 
@@ -49,8 +44,8 @@ class TokenHandler {
                 message: 'Failed to generate token'
             };
         }
-    }
-
+    }    
+    
     verifyToken(token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -62,23 +57,19 @@ class TokenHandler {
 
             return {
                 valid: true,
-                playerName: decoded.playerName,
-                socketId: decoded.socketId
+                playerName: decoded.playerName
             };
 
         } catch (error) {
             log.error('tokenHandler', `Token verification failed: ${error.message}`);
             return { valid: false, message: 'Invalid token' };
         }
-    }
-
-    revokeToken(socketId) {
+    }    
+    
+    revokeToken(playerName) {
         try {
-            const playerName = this.socketToPlayer.get(socketId);
-            
-            if (playerName) {
+            if (this.connectedPlayers.has(playerName)) {
                 this.connectedPlayers.delete(playerName);
-                this.socketToPlayer.delete(socketId);
                 
                 log.info('tokenHandler', `Token revoked for player: ${playerName}`);
                 return playerName;
@@ -94,14 +85,10 @@ class TokenHandler {
 
     getConnectedPlayers() {
         return Array.from(this.connectedPlayers.keys());
-    }
-
+    }    
+    
     isNameAvailable(playerName) {
         return !this.connectedPlayers.has(playerName);
-    }
-
-    getPlayerBySocket(socketId) {
-        return this.socketToPlayer.get(socketId) || null;
     }
 }
 

@@ -148,13 +148,13 @@ const setupRestEndpoints = (router) => {
             res.status(500).json({ error: 'Internal server error', taken: true });
         }
     });    
-    
+
     // POST /player - Create new player with JWT token and password
     router.post('/player', async (req, res) => {
         try {
-            const { playerName, socketId, password } = req.body;
+            const { playerName, password } = req.body;
 
-            if (!playerName || !socketId) {
+            if (!playerName) {
                 return res.status(400).json({ error: 'Nome de jogador é obrigatório.' });
             }
 
@@ -190,7 +190,7 @@ const setupRestEndpoints = (router) => {
             }
 
             // Generate token for the session
-            const result = tokenHandler.generateToken(trimmedName, socketId);
+            const result = tokenHandler.generateToken(trimmedName);
 
             if (result.success) {
                 res.status(201).json({
@@ -207,14 +207,14 @@ const setupRestEndpoints = (router) => {
             log.error('rest', `Error creating player: ${error.message}`);
             res.status(500).json({ error: 'Internal server error' });
         }
-    });
-
+    });    
+    
     // POST /player/authenticate - Authenticate existing player
     router.post('/player/authenticate', async (req, res) => {
         try {
-            const { playerName, password, socketId } = req.body;
+            const { playerName, password } = req.body;
 
-            if (!playerName || !password || !socketId) {
+            if (!playerName || !password) {
                 return res.status(400).json({ error: 'Nome de jogador e senha são obrigatórios.' });
             }
 
@@ -241,7 +241,7 @@ const setupRestEndpoints = (router) => {
             await player.save();
 
             // Generate token for the session
-            const result = tokenHandler.generateToken(trimmedName, socketId);
+            const result = tokenHandler.generateToken(trimmedName);
 
             if (result.success) {
                 res.status(200).json({
