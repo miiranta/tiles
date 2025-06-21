@@ -195,6 +195,8 @@ class PlayerController {
             return;
           }
 
+          socketPlayerName = tokenInfo.playerName;
+
           this.playerManager
             .updatePlayerPosition(
               tokenInfo.playerName,
