@@ -1,0 +1,42 @@
+services:
+  # MongoDB database
+  mongodb:
+    image: mongo:7.0
+    container_name: tiles-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: tiles
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - tiles-network
+
+  # Tiles application
+  tiles-app:
+    build: .
+    container_name: tiles-app
+    restart: unless-stopped
+    environment:
+      - MONGODB_CONNECTION_STRING=mongodb://root:rootpassword@mongodb:27017/tiles?authSource=admin
+      - JWT_SECRET=your_super_secret_jwt_key_change_in_production
+      - PORT=3000
+      - BASE_URL=localhost
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    volumes:
+      - /app/node_modules
+    networks:
+      - tiles-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  tiles-network:
+    driver: bridge
