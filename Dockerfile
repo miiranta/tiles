@@ -22,9 +22,9 @@ COPY app/ ./app/
 COPY api/ ./api/
 
 # Create environment directories
-RUN mkdir -p api/environments
+RUN mkdir -p api/environments app/environments
 
-# Update the existing environment file for Angular with apiUrl property
+# Create environment file for Angular with apiUrl property
 RUN echo "export const environment = { BASE_URL: 'localhost', PORT: 3000, apiUrl: 'http://localhost:3000' };" > app/environments/environment.ts
 
 # Build Angular app
