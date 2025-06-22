@@ -35,11 +35,6 @@ tileSchema.statics.getDefaultType = function (x, y) {
   }
 };
 
-tileSchema.methods.setDefaultType = function () {
-  this.type = this.constructor.getDefaultType(this.x, this.y);
-  return this;
-};
-
 const Tile = mongoose.model("Tile", tileSchema);
 
 module.exports = {
