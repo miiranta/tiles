@@ -1,1 +1,10 @@
-require("./src/main");
+const path = require("path");
+const { log } = require("./src/utils/colorLogging");
+
+const isDev = process.argv.includes("--dev");
+
+if (!isDev) {
+  require("./src/main-ssl");
+} else {
+  require("./src/main");
+}
