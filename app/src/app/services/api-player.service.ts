@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { WebsocketService } from './websocket.service';
 
-const BASE_URL = `http://${environment.BASE_URL}:${environment.PORT}`;
+const BASE_URL = environment.BASE_URL;
 
 @Injectable({
   providedIn: 'root',

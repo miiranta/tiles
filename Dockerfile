@@ -25,7 +25,7 @@ COPY api/ ./api/
 RUN mkdir -p api/environments app/environments
 
 # Create environment file for Angular with apiUrl property
-RUN echo "export const environment = { BASE_URL: 'localhost', PORT: 3000, apiUrl: 'http://localhost:3000' };" > app/environments/environment.ts
+RUN echo "export const environment = { BASE_URL: 'https://tiles.luvas.io', PORT: 443 };" > app/environments/environment.ts
 
 # Build Angular app
 WORKDIR /app/app

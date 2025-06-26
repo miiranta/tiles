@@ -6,7 +6,7 @@ const { Server } = require("socket.io");
 const { Database } = require("./infrastructure/database");
 const { AppManager } = require("./application/appManager");
 const { log } = require("./utils/colorLogging");
-const execSync = require("child_process").execSync;
+const fs = require("fs");
 
 const ANGULAR_FOLDER = path.join(__dirname, "../../app/dist/tiles/browser");
 
@@ -21,6 +21,30 @@ if (!EMAIL || !DOMAIN) {
   process.exit(1);
 }
 
+const greenlockDir = path.join(__dirname, "../greenlock.d");
+const greenlockConfigPath = path.join(greenlockDir, "config.json");
+
+try {
+  if (!fs.existsSync(greenlockDir)) {
+    fs.mkdirSync(greenlockDir, { recursive: true });
+  }
+  
+  if (!fs.existsSync(greenlockConfigPath)) {
+    const config = {
+      sites: [
+        {
+          subject: DOMAIN,
+          altnames: [DOMAIN]
+        }
+      ]
+    };
+    fs.writeFileSync(greenlockConfigPath, JSON.stringify(config, null, 2));
+    log.info("setup", `Configuração do Greenlock criada: ${greenlockConfigPath}`);
+  }
+} catch (error) {
+  log.error("setup", `Erro ao criar configuração: ${error.message}`);
+}
+
 const startServer = async () => {
   const database = new Database();
   await database.connect();
@@ -31,34 +55,31 @@ const startServer = async () => {
 
   app.use(express.static(ANGULAR_FOLDER));
 
-  //GET /: Envia o frontend ao cliente
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(ANGULAR_FOLDER, "index.html"));
-  });
-
-  execSync(
-    `npx greenlock add --subject ${DOMAIN} --altnames ${DOMAIN}`,
-    (error, stdout, stderr) => {
-      if (error) {
-        log.error("server", `Erro ao adicionar certificado: ${error.message}`);
-        return;
-      }
-      log.info("server", `Certificado adicionado com sucesso: ${stdout}`);
-    },
-  );
-
   const glx = Greenlock.init({
     packageRoot: path.join(__dirname, ".."),
     configDir: path.join(__dirname, "../greenlock.d"),
     maintainerEmail: EMAIL,
-    cluster: false,
-    staging: false,
+    cluster: false
   });
 
   const server = glx.serve(app);
 
-  const io = new Server(server, { cors: { origin: "*" } });
+  const io = new Server(server, { 
+    cors: { 
+      origin: "*",
+      methods: ["GET", "POST"],
+      credentials: true
+    },
+    allowEIO3: true,
+    transports: ['websocket', 'polling']
+  });
+  
   new AppManager(app, io, database);
+
+  //GET /: Envia o frontend ao cliente
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(ANGULAR_FOLDER, "index.html"));
+  });
 
   const gracefulShutdown = async () => {
     log.info("server", "Desligando servidor...");
