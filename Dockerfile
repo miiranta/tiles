@@ -28,6 +28,6 @@ RUN mkdir -p api/environments
 WORKDIR /app/api
 RUN npm run setup
 
-EXPOSE 80 443
+EXPOSE 80 443 3000
 
 CMD ["node", "app.js"]
