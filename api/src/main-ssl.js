@@ -79,10 +79,9 @@ const startServer = async () => {
     
     new AppManager(app, io, database);
 
-    // Serve the Express app through Greenlock
     glx.serveApp(app);
 
-    log.success("server", "HTTPS server with Socket.IO started");
+    log.success("server", "Servidor iniciado com SSL habilitado. PORTA: 443 e 80.");
   }
 
   const gracefulShutdown = async () => {

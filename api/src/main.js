@@ -38,7 +38,7 @@ const startServer = async () => {
   });
 
   server.listen(PORT, () => {
-    log.success("server", `Servidor rodando na porta ${PORT}`);
+    log.success("server", `Servidor iniciado. PORTA: ${PORT}`);
   });
 
   const gracefulShutdown = async () => {

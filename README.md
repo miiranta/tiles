@@ -14,7 +14,7 @@ PORT = 3000;
 
 
 ```typescript
-// And if you  want to enable SSL, also add:
+// And if you  want to enable SSL, also add (PORT will be ignored):
 SSL='true'
 DOMAIN='your-domain.com'
 EMAIL='your-email@example.com'
@@ -32,3 +32,6 @@ npm start
 ```
 
 - Open your browser and navigate to `http://localhost:3000` (or https://{DOMAIN}) to see the application in action.
+
+#### Setup and Run (Docker)
+
