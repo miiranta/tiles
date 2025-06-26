@@ -28,18 +28,21 @@ try {
   if (!fs.existsSync(greenlockDir)) {
     fs.mkdirSync(greenlockDir, { recursive: true });
   }
-  
+
   if (!fs.existsSync(greenlockConfigPath)) {
     const config = {
       sites: [
         {
           subject: DOMAIN,
           altnames: [DOMAIN, `www.${DOMAIN}`],
-        }
-      ]
+        },
+      ],
     };
     fs.writeFileSync(greenlockConfigPath, JSON.stringify(config, null, 2));
-    log.info("setup", `Configuração do Greenlock criada: ${greenlockConfigPath}`);
+    log.info(
+      "setup",
+      `Configuração do Greenlock criada: ${greenlockConfigPath}`,
+    );
   }
 } catch (error) {
   log.error("setup", `Erro ao criar configuração: ${error.message}`);
@@ -59,29 +62,30 @@ const startServer = async () => {
     packageRoot: path.join(__dirname, ".."),
     configDir: path.join(__dirname, "../greenlock.d"),
     maintainerEmail: EMAIL,
-    cluster: false
-  })
-  .ready(httpsWorker);
+    cluster: false,
+  }).ready(httpsWorker);
 
   function httpsWorker(glx) {
-
     const server = glx.httpsServer();
-    
-    const io = new Server(server, { 
-      cors: { 
+
+    const io = new Server(server, {
+      cors: {
         origin: "*",
         methods: ["GET", "POST"],
-        credentials: true
+        credentials: true,
       },
       allowEIO3: true,
-      transports: ['websocket', 'polling']
+      transports: ["websocket", "polling"],
     });
-    
+
     new AppManager(app, io, database);
 
     glx.serveApp(app);
 
-    log.success("server", "Servidor iniciado com SSL habilitado. PORTA: 443 e 80.");
+    log.success(
+      "server",
+      "Servidor iniciado com SSL habilitado. PORTA: 443 e 80.",
+    );
   }
 
   const gracefulShutdown = async () => {

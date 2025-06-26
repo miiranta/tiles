@@ -2,7 +2,6 @@ const express = require("express");
 const { log } = require("../utils/colorLogging");
 
 class PlayerController {
-
   constructor(app, io, playerManager, tokenManager) {
     this.app = app;
     this.io = io;
@@ -66,11 +65,9 @@ class PlayerController {
         }
 
         if (playerName.trim().length < 2 || playerName.trim().length > 20) {
-          return res
-            .status(400)
-            .json({
-              error: "Nomes de jogador devem ter entre 2 e 20 caracteres.",
-            });
+          return res.status(400).json({
+            error: "Nomes de jogador devem ter entre 2 e 20 caracteres.",
+          });
         }
 
         const trimmedName = playerName.trim();

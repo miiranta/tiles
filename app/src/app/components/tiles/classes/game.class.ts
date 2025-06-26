@@ -23,7 +23,7 @@ export class Game {
     apiMap: any,
     apiPlayer: any,
     playerService: any,
-    playerName: string
+    playerName: string,
   ) {
     this.playerName = playerName;
     if (this.playerName == '' || this.playerName == undefined) {

@@ -15,7 +15,7 @@ export class WebsocketService {
     console.log('Connecting to WebSocket server at:', BASE_URL);
     this.socket = io(BASE_URL, {
       secure: BASE_URL.startsWith('https'),
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
     });
   }
 

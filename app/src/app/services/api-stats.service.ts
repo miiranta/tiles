@@ -8,14 +8,13 @@ const BASE_URL = `${environment.BASE_URL}:${environment.PORT}`;
   providedIn: 'root',
 })
 export class ApiStatsService {
-  
   constructor() {}
 
   async getPlayerStats(playerName: string): Promise<PlayerStats> {
     const response = await fetch(`${BASE_URL}/stats/${playerName}`);
     if (!response.ok) {
       throw new Error(
-        `Erro ao buscar estatísticas do jogador: ${response.statusText}`
+        `Erro ao buscar estatísticas do jogador: ${response.statusText}`,
       );
     }
     const data: PlayerStats = await response.json();

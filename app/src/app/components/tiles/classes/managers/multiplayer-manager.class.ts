@@ -44,7 +44,7 @@ export class MultiplayerManager {
       this.game.apiPlayer.sendPlayerUpdate(
         token,
         player_coords.x,
-        player_coords.y
+        player_coords.y,
       );
       this.lastSentPosition = { x: player_coords.x, y: player_coords.y };
       this.lastSentTime = currentTime;
@@ -106,7 +106,7 @@ export class MultiplayerManager {
           moveDuration: PLAYER_MOVE_DURATION,
           last_update: Date.now(),
           randomRgbColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
-            Math.random() * 256
+            Math.random() * 256,
           )}, ${Math.floor(Math.random() * 256)})`,
         };
         this.all_players.set(data.playerName, newPlayer);

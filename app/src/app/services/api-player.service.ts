@@ -22,7 +22,7 @@ export class ApiPlayerService {
 
   async createPlayerWithPassword(
     playerName: string,
-    password: string
+    password: string,
   ): Promise<any> {
     return await fetch(`${BASE_URL}/player`, {
       method: 'POST',

@@ -2,7 +2,6 @@ const { Player } = require("../domain/models/playerModel");
 const { log } = require("../utils/colorLogging");
 
 class PlayerManager {
-  
   constructor(database, statsManager, tokenManager) {
     this.database = database;
     this.statsManager = statsManager;
@@ -39,7 +38,7 @@ class PlayerManager {
       if (!player.validatePassword(password)) {
         return { success: false, message: "Senha inválida" };
       }
-      
+
       await player.save();
 
       const token = this.tokenManager.generateToken(playerName);

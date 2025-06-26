@@ -4,7 +4,6 @@ const { COLORS } = require("../domain/enums/colors");
 const { log } = require("../utils/colorLogging");
 
 class MapController {
-
   constructor(app, io, mapManager, tokenManager) {
     this.app = app;
     this.io = io;
@@ -58,7 +57,6 @@ class MapController {
 
   setupWebSocket() {
     this.io.on("connection", (socket) => {
-
       //WS “map-place”: Coloca um bloco no mapa
       socket.on("map-place", async (data) => {
         try {

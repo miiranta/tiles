@@ -22,12 +22,12 @@ services:
     container_name: tiles-app-prod
     restart: always
     environment:
-      MONGODB_CONNECTION_STRING: 'mongodb://tilesadmin:YOUR_MONGO_PASSWORD@mongodb:27017/tiles?authSource=admin' # Replace YOUR_MONGO_PASSWORD
-      JWT_SECRET: 'YOUR_JWT_SECRET' #
-      PORT: 'YOUR_PORT' #e.g. 3000
-      DOMAIN: 'YOUR_DOMAIN' #e.g. tiles.luvas.io or localhost
-      SSL: 'false || true' # Set to 'true' if you want to use SSL
-      EMAIL: 'EXAMPLE@EMAIL.COM' #
+      MONGODB_CONNECTION_STRING: "mongodb://tilesadmin:YOUR_MONGO_PASSWORD@mongodb:27017/tiles?authSource=admin" # Replace YOUR_MONGO_PASSWORD
+      JWT_SECRET: "YOUR_JWT_SECRET" #
+      PORT: "YOUR_PORT" #e.g. 3000
+      DOMAIN: "YOUR_DOMAIN" #e.g. tiles.luvas.io or localhost
+      SSL: "false || true" # Set to 'true' if you want to use SSL
+      EMAIL: "EXAMPLE@EMAIL.COM" #
     ports:
       - "80:80"
       - "443:443"

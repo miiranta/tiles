@@ -2,7 +2,6 @@ const express = require("express");
 const { log } = require("../utils/colorLogging");
 
 class StatsController {
-
   constructor(app, statsManager) {
     this.app = app;
     this.statsManager = statsManager;

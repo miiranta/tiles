@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { log } = require("../utils/colorLogging");
 
 class Database {
-  
   constructor() {
     this.connection = null;
   }

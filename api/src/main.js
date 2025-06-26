@@ -19,8 +19,8 @@ const startServer = async () => {
 
   const app = express();
   app.use(express.json());
-  app.use(cors({origin: "*",}),);
-  
+  app.use(cors({ origin: "*" }));
+
   app.use(express.static(ANGULAR_FOLDER));
 
   const server = http.createServer(app);

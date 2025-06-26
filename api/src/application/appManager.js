@@ -8,7 +8,6 @@ const { StatsManager } = require("./statsManager");
 const { TokenManager } = require("./tokenManager");
 
 class AppManager {
-  
   constructor(app, io, database) {
     this.tokenManager = new TokenManager();
     this.statsManager = new StatsManager(database);

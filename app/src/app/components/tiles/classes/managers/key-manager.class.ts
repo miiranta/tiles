@@ -1,7 +1,7 @@
 export class KeyManager {
   keyMap: Map<string, boolean> = new Map();
   scrollIndex: number = 0;
-  
+
   constructor() {
     window.addEventListener('keydown', this.keydown.bind(this));
     window.addEventListener('keyup', this.keyup.bind(this));
