@@ -24,10 +24,8 @@ COPY api/ ./api/
 # Create environment directories
 RUN mkdir -p api/environments
 
-# Build Angular app
-WORKDIR /app/api
-RUN npm run setup
-
 EXPOSE 80 443 3000
 
-CMD ["node", "app.js"]
+# Run setup and start the application
+WORKDIR /app/api
+CMD ["sh", "-c", "npm run setup && node app.js"]
