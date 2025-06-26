@@ -16,7 +16,7 @@ function setAngularEnv () {
       const envContent = fs.readFileSync(envPath, 'utf8');
       const envVars = parseEnvFile(envContent);
       
-      if (envVars.BASE_URL) config.BASE_URL = envVars.BASE_URL;
+      if (envVars.DOMAIN) config.BASE_URL = envVars.DOMAIN;
       if (envVars.PORT) config.PORT = envVars.PORT;
       
       if (envVars.SSL === true || envVars.SSL === 'true') {
