@@ -4,15 +4,6 @@ SD + WEBDEV Project.
 
 #### Setup and Run
 
-- Create "environments" folder in "app/" and "environment.ts" file inside it with the following content:
-
-```typescript
-export const environment = {
-  BASE_URL: "localhost",
-  PORT: 3000,
-};
-```
-
 - Create "environments" folder in "api/" and ".env" file inside it with the following content:
 
 ```typescript
@@ -24,6 +15,7 @@ PORT = 3000;
 
 ```typescript
 // And if you  want to enable SSL, also add:
+SSL='true'
 DOMAIN='your-domain.com'
 EMAIL='your-email@example.com'
 ```
@@ -36,11 +28,7 @@ npm run setup
 ```
 
 ```bash
-// With SSL -- ignores PORT and requires DOMAIN and EMAIL
 npm start
-
-// Without SSL
-npm run dev
 ```
 
-- Open your browser and navigate to `http://localhost:3000` to see the application in action.
+- Open your browser and navigate to `http://localhost:3000` (or https://{DOMAIN}) to see the application in action.
