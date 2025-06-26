@@ -35,6 +35,6 @@ RUN ng build
 # because the API looks for ../../app/dist/tiles/browser from src/main.js
 WORKDIR /app/api
 
-EXPOSE 3000
+EXPOSE 80 443
 
 CMD ["node", "app.js"]
