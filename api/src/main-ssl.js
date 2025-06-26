@@ -34,7 +34,7 @@ try {
       sites: [
         {
           subject: DOMAIN,
-          altnames: [DOMAIN]
+          altnames: [DOMAIN, `www.${DOMAIN}`],
         }
       ]
     };
