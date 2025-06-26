@@ -60,26 +60,30 @@ const startServer = async () => {
     configDir: path.join(__dirname, "../greenlock.d"),
     maintainerEmail: EMAIL,
     cluster: false
-  });
+  })
+  .ready(httpsWorker);
 
-  const server = glx.serve(app);
+  function httpsWorker(glx) {
 
-  const io = new Server(server, { 
-    cors: { 
-      origin: "*",
-      methods: ["GET", "POST"],
-      credentials: true
-    },
-    allowEIO3: true,
-    transports: ['websocket', 'polling']
-  });
-  
-  new AppManager(app, io, database);
+    const server = glx.httpsServer();
+    
+    const io = new Server(server, { 
+      cors: { 
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true
+      },
+      allowEIO3: true,
+      transports: ['websocket', 'polling']
+    });
+    
+    new AppManager(app, io, database);
 
-  //GET /: Envia o frontend ao cliente
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(ANGULAR_FOLDER, "index.html"));
-  });
+    // Serve the Express app through Greenlock
+    glx.serveApp(app);
+
+    log.success("server", "HTTPS server with Socket.IO started");
+  }
 
   const gracefulShutdown = async () => {
     log.info("server", "Desligando servidor...");
