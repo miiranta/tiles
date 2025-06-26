@@ -46,7 +46,7 @@ www.DOMAIN
 
 - Copy the **docs/docker-compose.example.yml** file to the root of your project (together with the Dockerfile) and rename it to **docker-compose.yml**.
 - Edit the **docker-compose.yml** file to set your environment variables, such as `YOUR_MONGO_PASSWORD`, `JWT_SECRET`,  `SSL`, `PORT`,`DOMAIN`, and `EMAIL`. Follow the comments in the file for guidance.
-- If SSL = 'false', edit **Dockerfile** and add your PORT to the `EXPOSE` line (e.g. PORT: 3000 `EXPOSE 80 443 3000`). Also edit the **docker-compose.yml** file to expose the same port (e.g. `3000:3000`).
+- > If SSL = 'false', edit **Dockerfile** and add your PORT to the `EXPOSE` line (e.g. PORT: 3000 `EXPOSE 80 443 3000`). Also edit the **docker-compose.yml** file to expose the same port (e.g. `3000:3000`).
 - Run the following command in the terminal:
 
 ```bash
@@ -54,3 +54,6 @@ docker compose -f docker-compose.yml build
 docker compose -f docker-compose.yml up
 ```
 
+#### Try it out!
+
+- [tiles.luvas.io](https://tiles.luvas.io)
