@@ -32,17 +32,6 @@ npm start
 
 - Open your browser and navigate to `http://localhost:3000` (or https://{DOMAIN}) to see the application in action.
 
-##### SSL warning
-
-- PORT variable will be ignored (443 will be used).
-- The server will try to issue 2 certificates using the email you provided:
-
-```
-DOMAIN
-www.DOMAIN
-// Be sure to configure your DNS records for both!
-```
-
 #### Setup and Run (Docker)
 
 - Copy the **docs/docker-compose.example.yml** file to the root of your project (together with the Dockerfile) and rename it to **docker-compose.yml**.
@@ -55,6 +44,18 @@ docker compose -f docker-compose.yml build
 docker compose -f docker-compose.yml up
 ```
 
+#### SSL warning
+If you set `SSL = 'true'`:
+- PORT variable will be ignored (443 will be used).
+- The server will try to issue 2 certificates using the email you provided:
+
+```
+DOMAIN
+www.DOMAIN
+```
+- Be sure to configure your DNS records for both!
+
 #### Try it out!
 
 - [tiles.luvas.io](https://tiles.luvas.io)
+
