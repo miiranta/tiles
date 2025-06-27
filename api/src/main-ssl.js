@@ -80,6 +80,11 @@ const startServer = async () => {
 
     new AppManager(app, io, database);
 
+    //GET /: Envia o frontend ao cliente
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(ANGULAR_FOLDER, "/index.html"));
+    });
+
     glx.serveApp(app);
 
     log.success(
