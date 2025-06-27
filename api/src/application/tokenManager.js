@@ -3,7 +3,7 @@ const { log } = require("../utils/colorLogging");
 
 class TokenManager {
   constructor() {
-    this.connectedPlayers = new Map(); // playerName -> { token, connectedAt }
+    this.connectedPlayers = new Map(); // playerName -> { token, connectedAt, lastPing }
   }
 
   generateToken(playerName) {
@@ -27,6 +27,7 @@ class TokenManager {
       this.connectedPlayers.set(playerName, {
         token,
         connectedAt: new Date(),
+        lastPing: Date.now(),
       });
       log.success("tokenManager", `Token gerado para jogador: ${playerName}`);
 
@@ -79,6 +80,45 @@ class TokenManager {
       log.error("tokenManager", `Erro ao revogar token: ${error.message}`);
       return null;
     }
+  }
+
+  updatePlayerPing(playerName) {
+    try {
+      if (this.connectedPlayers.has(playerName)) {
+        const playerInfo = this.connectedPlayers.get(playerName);
+        playerInfo.lastPing = Date.now();
+        this.connectedPlayers.set(playerName, playerInfo);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      log.error("tokenManager", `Erro ao atualizar ping do jogador: ${error.message}`);
+      return false;
+    }
+  }
+
+  getDisconnectedPlayers(timeoutMs = 60000) {
+    const disconnectedPlayers = [];
+    const now = Date.now();
+    
+    for (const [playerName, playerInfo] of this.connectedPlayers.entries()) {
+      if (now - playerInfo.lastPing > timeoutMs) {
+        disconnectedPlayers.push(playerName);
+      }
+    }
+    
+    return disconnectedPlayers;
+  }
+
+  removeDisconnectedPlayers(timeoutMs = 60000) {
+    const disconnectedPlayers = this.getDisconnectedPlayers(timeoutMs);
+    
+    disconnectedPlayers.forEach(playerName => {
+      this.connectedPlayers.delete(playerName);
+      log.info("tokenManager", `Jogador removido por timeout: ${playerName}`);
+    });
+    
+    return disconnectedPlayers;
   }
 
   isNameAvailable(playerName) {

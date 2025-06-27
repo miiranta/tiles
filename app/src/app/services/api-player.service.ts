@@ -51,8 +51,8 @@ export class ApiPlayerService {
     });
   }
 
-  sendPlayerUpdate(token: string, x: number, y: number) {
-    this.websocketService.emit('player-update', { token, x, y });
+  sendPlayerUpdate(token: string, x: number, y: number, hasMoved?: boolean) {
+    this.websocketService.emit('player-update', { token, x, y, hasMoved });
   }
 
   onPlayerUpdate(): Observable<any> {

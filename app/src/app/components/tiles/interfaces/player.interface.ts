@@ -3,6 +3,7 @@ export interface Player {
   y: number;
   playerName: string;
   last_update: number;
+  last_movement: number;
   randomRgbColor: string;
 }
 

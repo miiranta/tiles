@@ -21,9 +21,13 @@ export class MultiplayerManager {
     this.listenPlayerUpdates();
     this.listenPlayerRemove();
     this.listenMapPlace();
+
+    setInterval(() => {
+      this.sendPlayerUpdate(true);
+    }, 1000 * 10);
   }
 
-  sendPlayerUpdate() {
+  sendPlayerUpdate(bypassMovementCheck: boolean = false) {
     const player_coords = this.game.player.getPositionFloat();
     const currentTime = Date.now();
 
@@ -34,17 +38,19 @@ export class MultiplayerManager {
     const dx = Math.abs(player_coords.x - this.lastSentPosition.x);
     const dy = Math.abs(player_coords.y - this.lastSentPosition.y);
 
-    if (dx < MIN_MOVEMENT_THRESHOLD && dy < MIN_MOVEMENT_THRESHOLD) {
+    if ((dx < MIN_MOVEMENT_THRESHOLD && dy < MIN_MOVEMENT_THRESHOLD) && !bypassMovementCheck) {
       return;
     }
+    const hasMoved = (dx >= MIN_MOVEMENT_THRESHOLD || dy >= MIN_MOVEMENT_THRESHOLD);
 
     const token = this.game.playerService.getJwtToken();
-
+    
     if (token) {
       this.game.apiPlayer.sendPlayerUpdate(
         token,
         player_coords.x,
         player_coords.y,
+        hasMoved
       );
       this.lastSentPosition = { x: player_coords.x, y: player_coords.y };
       this.lastSentTime = currentTime;
@@ -92,8 +98,11 @@ export class MultiplayerManager {
         }
 
         player.last_update = Date.now();
+        
+        if (data.hasMoved) {
+          player.last_movement = Date.now();
+        }
       } else {
-        // Create new player with trajectory setup
         const newPlayer: MultiplayerPlayer = {
           playerName: data.playerName,
           x: targetX,
@@ -105,6 +114,7 @@ export class MultiplayerManager {
           moveStartTime: Date.now(),
           moveDuration: PLAYER_MOVE_DURATION,
           last_update: Date.now(),
+          last_movement: data.hasMoved ? Date.now() : 0,
           randomRgbColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
             Math.random() * 256,
           )}, ${Math.floor(Math.random() * 256)})`,

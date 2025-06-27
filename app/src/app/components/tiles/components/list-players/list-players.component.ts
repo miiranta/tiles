@@ -47,9 +47,22 @@ export class ListPlayersComponent implements OnInit, OnDestroy {
   get totalPlayers(): number {
     return this.allPlayers.length + 1;
   }
+
   isPlayerActive(player: MultiplayerPlayer): boolean {
     const thirtySecondsAgo = Date.now() - 30000;
-    return player.last_update > thirtySecondsAgo;
+    
+    const hasRecentPing = player.last_update > thirtySecondsAgo;
+    
+    if (!hasRecentPing) {
+      return false;
+    }
+    
+    if (player.last_movement === 0) {
+      return false;
+    }
+    
+    const hasRecentMovement = player.last_movement > thirtySecondsAgo;
+    return hasRecentMovement;
   }
 
   getPlayerStatus(player: MultiplayerPlayer): string {

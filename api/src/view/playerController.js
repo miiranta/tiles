@@ -9,6 +9,7 @@ class PlayerController {
     this.tokenManager = tokenManager;
     this.setupRoutes();
     this.setupWebSocket();
+    this.startDisconnectionChecker();
   }
 
   setupRoutes() {
@@ -171,6 +172,23 @@ class PlayerController {
     log.info("playerController", "Endpoints do jogador configurados");
   }
 
+  startDisconnectionChecker() {
+    setInterval(() => {
+      const disconnectedPlayers = this.tokenManager.removeDisconnectedPlayers(60000);
+      
+      disconnectedPlayers.forEach(playerName => {
+        //WS “player-remove”: Remove o player (timeout)
+        this.io.emit("player-remove", {
+          playerName: playerName,
+        });
+        log.info(
+          "playerController",
+          `Jogador removido por timeout de ping: ${playerName}`,
+        );
+      });
+    }, 30000);
+  }
+
   setupWebSocket() {
     this.io.on("connection", (socket) => {
       log.info("playerController", `Cliente conectado: ${socket.id}`);
@@ -181,7 +199,7 @@ class PlayerController {
       //WS “player-update”: Atualiza a posição de um player
       socket.on("player-update", async (data) => {
         try {
-          const { token, x, y } = data;
+          const { token, x, y, hasMoved } = data;
 
           if (!token || typeof x !== "number" || typeof y !== "number") {
             return;
@@ -193,6 +211,8 @@ class PlayerController {
           }
 
           socketPlayerName = tokenInfo.playerName;
+
+          this.tokenManager.updatePlayerPing(tokenInfo.playerName);
 
           this.playerManager
             .updatePlayerPosition(
@@ -215,6 +235,7 @@ class PlayerController {
             playerName: tokenInfo.playerName,
             x,
             y,
+            hasMoved: hasMoved || false,
           });
         } catch (error) {
           log.error(
@@ -224,7 +245,7 @@ class PlayerController {
         }
       });
 
-      //WS “player-remove”: Remove o player
+      //WS “player-remove”: Remove o player (Disconnect)
       socket.on("disconnect", () => {
         try {
           if (socketPlayerName) {

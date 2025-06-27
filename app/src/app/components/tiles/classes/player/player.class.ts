@@ -9,6 +9,7 @@ export class Player implements IPlayer {
   public y: number = 0;
   public playerName: string;
   public last_update: number = 0;
+  public last_movement: number = 0;
   public randomRgbColor: string = '';
 
   constructor(playerName: string) {
