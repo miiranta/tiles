@@ -5,6 +5,7 @@ export class TileMap {
   private apiMap: any;
   private apiPlayer: any;
   private playerService: any;
+  private pendingPlacements: Set<string> = new Set();
 
   constructor(apiMap: any, apiPlayer: any, playerService: any) {
     this.apiMap = apiMap;
@@ -59,10 +60,18 @@ export class TileMap {
 
     if (!this.map.has(key)) return;
 
-    if (this.map.get(key)?.type === type) return;
+    const currentTile = this.map.get(key);
+    if (currentTile && currentTile.type === type) return;
+    if (this.pendingPlacements.has(key)) return;
 
     const token = this.playerService.getJwtToken();
     if (!token) return;
+
+    this.pendingPlacements.add(key);
+    
+    setTimeout(() => {
+      this.pendingPlacements.delete(key);
+    }, 500);
 
     this.apiMap.sendMapPlace(token, x, y, type);
   }
@@ -75,5 +84,7 @@ export class TileMap {
     if (this.map.get(key)?.type === type) return;
 
     this.map.set(key, new Tile(x, y, type));
+    
+    this.pendingPlacements.delete(`${x},${y}`);
   }
 }
